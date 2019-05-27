@@ -1,0 +1,23 @@
+{
+    "name": "wysiwyg",
+    "description": "A basic and simple WYSIWYG editor for sstext of homepages build with the php templating engine blade.",
+    "keywords": ["WYSIWYG", "composer", "package", "blade"],
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Florian Heinrich",
+            "email": "heinrich@convidera.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "ramsey/uuid": "^4.0@dev",
+        "wehaa/liveupdate": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "HeinrichConvidera\\WYSIWYG\\": "src/"
+        }
+    }
+}

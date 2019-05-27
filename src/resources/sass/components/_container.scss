@@ -1,0 +1,24 @@
+.WYSIWYG__container {
+    /* reset-box-model */
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+
+    /* reset-font */
+    font: inherit !important;
+    font-size: 100% !important;
+    vertical-align: baseline !important;
+
+    /* styling */
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+
+    &-border {
+        border: $container-alert-border!important;
+    }
+
+    &:empty:not(:focus):not(.no-placeholder):before{
+        content:attr(data-placeholder)
+    }
+}
