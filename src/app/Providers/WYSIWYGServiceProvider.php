@@ -1,9 +1,9 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Providers;
+namespace Convidera\WYSIWYG\Providers;
 
-use HeinrichConvidera\WYSIWYG\App\Http\Resources\Resource;
-use HeinrichConvidera\WYSIWYG\App\Http\Resources\Response;
+use Convidera\WYSIWYG\Http\Resources\Resource;
+use Convidera\WYSIWYG\Http\Resources\Response;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 
@@ -17,10 +17,10 @@ class WYSIWYGServiceProvider extends ServiceProvider
     public function register()
     {
         // controller
-        $this->app->make('HeinrichConvidera\WYSIWYG\Controllers\WYSIWYGController');
+        $this->app->make('Convidera\WYSIWYG\Http\Controllers\WYSIWYGController');
 
         // views
-        $this->loadViewsFrom(__DIR__.'/views', 'wysiwyg');
+        $this->loadViewsFrom(realpath(__DIR__ . '/../../resources/views'), 'wysiwyg');
     }
 
     /**
@@ -30,21 +30,21 @@ class WYSIWYGServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
-
-        $this->publishes([
-            __DIR__ . '/views' => resource_path('views/vendor/wysiwyg'),
-        ], 'routes');
-        $this->publishes([
-            __DIR__ . '/migrations' => database_path('migrations')
-        ], 'migrations');
-        $this->publishes([
-            __DIR__ . '/assets' => public_path('vendor/wysiwyg'),
-        ], 'public');
-
         Resource::withoutWrapping();
         Response::displayTextElementKeys(env('DISPLAY_TEXT_ELEMENT_KEYS', false));
+
+        $this->loadRoutesFrom(realpath(__DIR__ . '/../../routes/api.php'));
+        $this->loadMigrationsFrom(realpath(__DIR__ . '/../../database/migrations'));
+
+        $this->publishes([
+            realpath(__DIR__ . '/../../resources/views') => resource_path('views/vendor/wysiwyg'),
+        ], 'routes');
+        $this->publishes([
+            realpath(__DIR__ . '/../../database/migrations') => database_path('migrations')
+        ], 'migrations');
+        $this->publishes([
+            realpath(__DIR__ . '/../../../dist') => public_path('vendor/wysiwyg'),
+        ], 'public');
 
         /**
          * @param data translation
@@ -59,7 +59,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
             $tag = (isset($parameters[1])) ? $parameters[1] : 'span';
             $tag = ($tag == 'null') ? '' : $tag;
             $editable = isset($parameters[2]) ? $parameters[2] : 'true';
-            return "<?php echo view('text-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
+            return "<?php echo view('wysiwyg::text-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
         });
     }
 }

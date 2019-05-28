@@ -1,6 +1,6 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Traits;
+namespace Convidera\WYSIWYG\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 

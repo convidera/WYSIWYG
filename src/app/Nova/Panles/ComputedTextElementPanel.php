@@ -1,9 +1,9 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Nova\Panles;
+namespace Convidera\WYSIWYG\Nova\Panles;
 
-use HeinrichConvidera\WYSIWYG\App\Nova\Fields\ComputedTextElement;
-use HeinrichConvidera\WYSIWYG\App\UuidModel;
+use Convidera\WYSIWYG\Nova\Fields\ComputedTextElement;
+use Convidera\WYSIWYG\UuidModel;
 
 class ComputedTextElementPanel extends \Laravel\Nova\Panel
 {

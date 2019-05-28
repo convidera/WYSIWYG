@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Traits;
+namespace Convidera\WYSIWYG\Traits;
 
-use HeinrichConvidera\WYSIWYG\App\TextElement;
+use Convidera\WYSIWYG\TextElement;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasDefaultTextContents

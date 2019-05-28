@@ -1,6 +1,6 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App;
+namespace Convidera\WYSIWYG;
 
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;

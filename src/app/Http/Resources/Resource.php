@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Http\Resources;
+namespace Convidera\WYSIWYG\Http\Resources;
 
-use HeinrichConvidera\WYSIWYG\App\Http\Resources\EmptyResource;
+use Convidera\WYSIWYG\Http\Resources\EmptyResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Resource extends JsonResource

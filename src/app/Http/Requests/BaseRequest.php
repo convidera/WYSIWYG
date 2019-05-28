@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Http\Requests;
+namespace Convidera\WYSIWYG\Http\Requests;
 
-use HeinrichConvidera\WYSIWYG\App\TextElement;
+use Convidera\WYSIWYG\TextElement;
 use Illuminate\Foundation\Http\FormRequest;
 
 abstract class BaseRequest extends FormRequest

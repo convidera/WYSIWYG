@@ -1,4 +1,13 @@
 const mix = require('laravel-mix');
 
-mix.js('src/resources/js/app.js', 'src/public/js')
-   .sass('src/resources/sass/app.scss', 'src/public/css');
+mix.setPublicPath('dist')
+   .js('src/resources/js/app.js', '.')
+   .sass('src/resources/sass/app.scss', '.');
+
+if (mix.inProduction()) {
+    mix.disableNotifications();
+    mix.version();
+}
+else {
+    mix.sourceMaps();
+}

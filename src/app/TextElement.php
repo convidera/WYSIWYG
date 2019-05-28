@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App;
+namespace Convidera\WYSIWYG;
 
-use HeinrichConvidera\WYSIWYG\App\UuidModel;
+use Convidera\WYSIWYG\UuidModel;
 
 class TextElement extends UuidModel
 {

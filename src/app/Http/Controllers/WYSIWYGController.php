@@ -1,28 +1,34 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Http\Controllers;
+namespace Convidera\WYSIWYG\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use HeinrichConvidera\WYSIWYG\App\TextElement;
-use HeinrichConvidera\WYSIWYG\App\Http\Requests\UpdateRequest;
-use HeinrichConvidera\WYSIWYG\App\Http\Resources\TextElementResource;
+use Convidera\WYSIWYG\TextElement;
+use Convidera\WYSIWYG\Http\Requests\UpdateRequest;
+use Convidera\WYSIWYG\Http\Resources\TextElementResource;
 
 class WYSIWYGController extends Controller
 {
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequest $request, TextElement $textElement = null) {
+    public function update(UpdateRequest $request, $textElement = null) {
+        if ( ! \Auth::user()) {
+            \Illuminate\Support\Facades\Log::debug('Not auth.');
+        }
+        else {
+            \Illuminate\Support\Facades\Log::debug('auth.');
+        }
 
         if ($textElement) {
             // update single
+            $textElement = TextElement::findOrFail($textElement);
             $textElement->value = $request->input('value');
             $textElement->save();
             return TextElementResource::make($textElement);
         }
 
         // update multiple
-
         return TextElementResource::collection(collect($request->all())->map(function ($text) {
             $textElement = TextElement::findOrFail($text['id']);
             $textElement->value = $text['value'];

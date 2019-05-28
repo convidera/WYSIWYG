@@ -11,5 +11,10 @@
 |
 */
 
-Route::/*middleware('auth:api')->*/match(['put', 'patch'], '/WYSIWYG/{textElement?}', 'API\WYSIWYGController@update');
-// Route::group(['prefix' => 'api', 'middleware' => 'api'], function() {
+Route::group([
+    'prefix'     => 'api',
+    'namespace'  => 'Convidera\WYSIWYG\Http\Controllers',
+    'middleware' => [ 'web', 'auth' ],
+], function() {
+    Route::match(['put', 'patch'], '/WYSIWYG/{textElement?}', 'WYSIWYGController@update');
+});

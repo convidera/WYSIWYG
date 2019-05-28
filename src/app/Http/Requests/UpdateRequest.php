@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Http\Requests;
+namespace Convidera\WYSIWYG\Http\Requests;
 
-use HeinrichConvidera\WYSIWYG\App\Http\Requests\BaseRequest;
+use Convidera\WYSIWYG\Http\Requests\BaseRequest;
 
 class UpdateRequest extends BaseRequest
 {

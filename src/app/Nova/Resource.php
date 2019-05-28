@@ -1,6 +1,6 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Nova;
+namespace Convidera\WYSIWYG\Nova;
 
 use Laravel\Nova\Resource as NovaResource;
 use Laravel\Nova\Http\Requests\NovaRequest;

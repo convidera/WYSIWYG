@@ -1,8 +1,8 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Nova;
+namespace Convidera\WYSIWYG\Nova;
 
-use App\Nova\Resource;
+use Convidera\WYSIWYG\Nova\Resource;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\Text;
@@ -13,10 +13,12 @@ abstract class TextElement extends Resource
 {
     /**
      * Array of class types which should be displayed.
-     * 
-     * Example: [ App\Nova\Homepage::class, App\Nova\StaticContent::class ]
+     *
+     * @return array
+     *
+     * Example: return [ App\Nova\Homepage::class, App\Nova\StaticContent::class ]
      */
-    public static $textElementableTypes = [];
+    public abstract function getTextElementableTypes();
 
     /**
      * Indicates if the resource should be displayed in the sidebar.
@@ -30,7 +32,7 @@ abstract class TextElement extends Resource
      *
      * @var string
      */
-    public static $model = 'App\TextElement';
+    public static $model = 'Convidera\WYSIWYG\TextElement';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -60,7 +62,7 @@ abstract class TextElement extends Resource
             Text::make('Key')->sortable(),
             Textarea::make('Value'),
             Liveupdate::make('Value')->onlyOnIndex(),
-            MorphTo::make('TextElementable')->types(self::textElementableTypes),
+            MorphTo::make('TextElementable')->types($this->getTextElementableTypes()),
         ];
     }
 

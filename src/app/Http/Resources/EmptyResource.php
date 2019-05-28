@@ -1,6 +1,6 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Http\Resources;
+namespace Convidera\WYSIWYG\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 

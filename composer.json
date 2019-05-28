@@ -1,23 +1,36 @@
 {
-    "name": "wysiwyg",
+    "name": "convidera/wysiwyg",
     "description": "A basic and simple WYSIWYG editor for sstext of homepages build with the php templating engine blade.",
     "keywords": ["WYSIWYG", "composer", "package", "blade"],
     "type": "project",
     "license": "GPL-3.0-or-later",
+    "version": "0.0.1.19",
     "authors": [
         {
             "name": "Florian Heinrich",
             "email": "heinrich@convidera.com"
         }
     ],
+    "support": {
+		"issues": "https://github.com/heinrichconvidera/wysiwyg/issues",
+		"source": "https://github.com/heinrichconvidera/wysiwyg"
+	},
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
-        "ramsey/uuid": "^4.0@dev",
-        "wehaa/liveupdate": "dev-master"
+        "ramsey/uuid": "^3.8.0",
+        "wehaa/liveupdate": "^0.1.0"
     },
     "autoload": {
         "psr-4": {
-            "HeinrichConvidera\\WYSIWYG\\": "src/"
+            "Convidera\\WYSIWYG\\": "src/app/"
         }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Convidera\\WYSIWYG\\Providers\\WYSIWYGServiceProvider"
+        ]
+      }
     }
 }

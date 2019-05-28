@@ -1,6 +1,6 @@
 <?php
 
-namespace HeinrichConvidera\WYSIWYG\App\Nova\Fields;
+namespace Convidera\WYSIWYG\Nova\Fields;
 
 use Ramsey\Uuid\Uuid;
 use Laravel\Nova\Fields\Text;
