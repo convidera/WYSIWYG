@@ -1,7 +1,7 @@
-@if(!Auth::user() || !$editable)
+@if(!Auth::user() || !$editable || !$data)
 
     {!! $tag ? "<$tag>" : '' !!}
-        {{ $data->value }}
+        {{ $data ? $data->value : '' }}
     {!! $tag ? "</$tag>" : '' !!}
 
 @else
