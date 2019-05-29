@@ -46,20 +46,58 @@ class WYSIWYGServiceProvider extends ServiceProvider
             realpath(__DIR__ . '/../../../dist') => public_path('vendor/wysiwyg'),
         ], 'public');
 
+        $this->directives();
+    }
+
+    private function directives() {
         /**
          * @param data translation
          * @param tag surrounding tag
          * @param editable force normal text
          */
         Blade::directive('text', function($expression) {
-            $parameters = array_map(function($parameter) {
-                return trim($parameter);
-            } , explode(',', $expression));
-            $data = $parameters[0];
-            $tag = (isset($parameters[1])) ? $parameters[1] : 'span';
-            $tag = ($tag == 'null') ? '' : $tag;
-            $editable = isset($parameters[2]) ? $parameters[2] : 'true';
-            return "<?php echo view('wysiwyg::text-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
+            $data = $this->parseExpression($expression);
+            return "<?php echo view('wysiwyg::text-element', $data) ?>";
         });
+
+        /**
+         * @param data translation
+         * @param tag surrounding tag
+         * @param editable force normal text
+         */
+        Blade::directive('markdown', function($expression) {
+            $data = $this->parseExpression($expression);
+            if ( array_key_exists('data', $data) && $data['data']) {
+                return "<?php echo view('wysiwyg::markdown-element', $data) ?>";
+                return "<?php echo Illuminate\Mail\Markdown::parse($expression); ?>";
+            }
+            return "<?php ob_start(); ?>";
+        });
+        Blade::directive('endmarkdown', function() {
+            return "<?php echo Illuminate\Mail\Markdown::parse(ob_get_clean()); ?>";
+        });
+    }
+
+    private function parseExpression($expression) {
+        if ( ! $expression) return [];
+        $parameters = array_map(function($parameter) {
+            return trim($parameter);
+        } , explode(',', $expression));
+        if (count($parameters) < 1) return [];
+
+        $data = $parameters[0];
+        $data = (strtoupper($data) == 'NULL') ? '' : $data;
+        $tag = (isset($parameters[1])) ? $parameters[1] : 'span';
+        $tag = (strtoupper($tag) == 'NULL') ? '' : $tag;
+        $editable = isset($parameters[2]) ? $parameters[2] : 'true';
+        $editable = (strtoupper($editable) == 'FALSE') ? 'false' : true;
+
+        return [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ];
+    }
+
+    private function arrayToString($array, $str = '') {
+        foreach ($array as $key => $item) {
+            $str .= "$key => $item <br>";
+        }
     }
 }
