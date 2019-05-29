@@ -13,13 +13,6 @@ class WYSIWYGController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateRequest $request, $textElement = null) {
-        if ( ! \Auth::user()) {
-            \Illuminate\Support\Facades\Log::debug('Not auth.');
-        }
-        else {
-            \Illuminate\Support\Facades\Log::debug('auth.');
-        }
-
         if ($textElement) {
             // update single
             $textElement = TextElement::findOrFail($textElement);
