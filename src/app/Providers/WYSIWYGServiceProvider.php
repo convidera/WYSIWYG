@@ -97,14 +97,10 @@ class WYSIWYGServiceProvider extends ServiceProvider
         return [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ];
     }
 
-    private function expressionDataToString($data) {
-        dd($data);
-        return "[ 'data' => $data->data, 'tag' => '$data->tag', 'editable' => $data->editable ]";
-    }
-
-    private function arrayToString($array, $str = '') {
-        foreach ($array as $key => $item) {
-            $str .= "$key => $item <br>";
-        }
+    private function expressionDataToString($dataArr) {
+        $data = $dataArr['data'];
+        $tag = $dataArr['tag'];
+        $editable = $dataArr['editable'];
+        return "[ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]";
     }
 }

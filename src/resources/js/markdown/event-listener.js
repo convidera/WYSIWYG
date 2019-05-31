@@ -11,16 +11,25 @@ export default function addEventListeners(container) {
 function onclick(e) {
     // e:    MouseEvent
     // this: element container
-    console.log(e, this);
+    
+    this.innerText = container.dataset.valueCurrent;
 }
 
 function onblur(e) {
-    // e:    ??Event
+    // e:    FocusEvent
     // this: element container
-    console.log(e, this);
+
+    const container = this;
+    const value = this.innerText;
+
+    container.dataset.valueCurrent = value;
+    parse(value, (xmlHttp) => {
+        container.innerHtml = xmlHttp.responseText;
+        container.blur();
+    });
 }
 
-function update(data, fnSuccess = null, fnError = null) {
+function parse(data, fnSuccess, fnError = null) {
     const mimeType = 'text/plain';
     const url = '/api/WYSIWYG/markdown-parser';
     const xmlHttp = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -30,9 +39,7 @@ function update(data, fnSuccess = null, fnError = null) {
     xmlHttp.onreadystatechange = function() {
         if (this.readyState == 4) {
             if (this.status == 200) {
-                if (fnSuccess) {
-                    fnSuccess(this);
-                }
+                fnSuccess(this);
             }
             else {
                 if (fnError) {
