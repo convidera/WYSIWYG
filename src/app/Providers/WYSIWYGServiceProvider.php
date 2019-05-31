@@ -71,7 +71,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
             $data = $this->parseExpression($expression);
             if ( array_key_exists('data', $data) && $data['data']) {
                 $dataStr = $this->expressionDataToString($data);
-                return "<?php echo view('wysiwyg::markdown-element', $dataStr) ?>";
+                return "<?php echo view('wysiwyg::markdown-element', $dataStr); ?>";
             }
             return "<?php ob_start(); ?>";
         });
