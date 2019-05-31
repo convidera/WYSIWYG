@@ -1,12 +1,12 @@
 @if(!Auth::user() || !$editable)
 
     {!! $tag ? "<$tag>" : '' !!}
-        {{ $data->value }}
+        {{ $data ? $data->value : '' }}
     {!! $tag ? "</$tag>" : '' !!}
 
 @else
 
-    <{{ $tag ? "$tag" : 'span' }} class="WYSIWYG__container"
+    <{{ $tag ? "$tag" : 'span' }} class="WYSIWYG__container WYSIWYG__container-text"
         data-id="{{ $data->id }}"
         data-key="{{ $data->key }}"
         data-value-origin="{{ $data->value }}"

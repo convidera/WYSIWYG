@@ -18,6 +18,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
     {
         // controller
         $this->app->make('Convidera\WYSIWYG\Http\Controllers\WYSIWYGController');
+        $this->app->make('Convidera\WYSIWYG\Http\Controllers\MarkdownParserController');
 
         // views
         $this->loadViewsFrom(realpath(__DIR__ . '/../../resources/views'), 'wysiwyg');
