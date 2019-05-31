@@ -21,10 +21,8 @@ trait HasDefaultMediaElements
         return self::$defaultMediaKeys;
     }
 
-    protected static function boot()
+    protected static function bootHasDefaultMediaElements()
     {
-        parent::boot();
-
         self::created(get_called_class() . '@createDefaultMediaKeys');
     }
 

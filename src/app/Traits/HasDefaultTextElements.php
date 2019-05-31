@@ -21,10 +21,8 @@ trait HasDefaultTextElements
         return self::$defaultTextKeys;
     }
 
-    protected static function boot()
+    protected static function bootHasDefaultTextElements()
     {
-        parent::boot();
-
         self::created(get_called_class() . '@createDefaultTextKeys');
     }
 
