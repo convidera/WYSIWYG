@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 interface ProvidesDefaultMediaElements
 {
-    public function textElements();
+    public function mediaElements();
 
-    public static function createDefaultTextKeys(Model $model);
+    public static function createDefaultMediaKeys(Model $model);
 }

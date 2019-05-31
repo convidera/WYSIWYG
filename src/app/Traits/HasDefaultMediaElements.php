@@ -7,28 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 
 trait HasDefaultMediaElements
 {
-    public static function createDefaultTextKeys(Model $model)
+    public static function createDefaultMediaKeys(Model $model)
     {
-        foreach (self::getDefaultTextKeys() as $defaultTextKey) {
-            $model->textElements()->firstOrCreate([
-                'key' => $defaultTextKey
+        foreach (self::getDefaultMediaKeys() as $defaultMediaKey) {
+            $model->mediaElements()->firstOrCreate([
+                'key' => $defaultMediaKey
             ]);
         }
     }
 
-    public static function getDefaultTextKeys()
+    public static function getDefaultMediaKeys()
     {
-        return self::$defaultTextKeys;
+        return self::$defaultMediaKeys;
     }
 
     protected static function boot()
     {
         parent::boot();
 
-        self::created(get_called_class() . '@createDefaultTextKeys');
+        self::created(get_called_class() . '@createDefaultMediaKeys');
     }
 
-    public function textElements() {
-        return $this->morphMany(TextElement::class, 'text_elementable');
+    public function mediaElements() {
+        return $this->morphMany(MediaElement::class, 'media_elementable');
     }
 }
