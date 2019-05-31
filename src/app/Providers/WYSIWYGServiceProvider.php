@@ -59,7 +59,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         Blade::directive('text', function($expression) {
             $data = $this->parseExpression($expression);
             $dataStr = $this->expressionDataToString($data);
-            return "<?php echo view('wysiwyg::text-element', $dataStr) ?>";
+            return "<?php echo view('wysiwyg::text-element', $dataStr); ?>";
         });
 
         /**
@@ -98,7 +98,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
     }
 
     private function expressionDataToString($data) {
-        return "[ 'data' => $data->data, 'tag' => '$data->tag', 'editable' => $data->editable ];"
+        return "[ 'data' => $data->data, 'tag' => '$data->tag', 'editable' => $data->editable ]";
     }
 
     private function arrayToString($array, $str = '') {
