@@ -98,6 +98,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
     }
 
     private function expressionDataToString($data) {
+        dd($data);
         return "[ 'data' => $data->data, 'tag' => '$data->tag', 'editable' => $data->editable ]";
     }
 
