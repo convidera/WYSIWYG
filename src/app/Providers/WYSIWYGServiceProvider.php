@@ -61,5 +61,16 @@ class WYSIWYGServiceProvider extends ServiceProvider
             $editable = isset($parameters[2]) ? $parameters[2] : 'true';
             return "<?php echo view('wysiwyg::text-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
         });
+
+        Blade::directive('media', function($expression) {
+            $parameters = array_map(function($parameter) {
+                return trim($parameter);
+            } , explode(',', $expression));
+            $data = $parameters[0];
+            $tag = (isset($parameters[1])) ? $parameters[1] : 'img';
+            $tag = ($tag == 'null') ? '' : $tag;
+            $editable = isset($parameters[2]) ? $parameters[2] : 'true';
+            return "<?php echo view('wysiwyg::media-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
+        });
     }
 }
