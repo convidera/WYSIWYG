@@ -4,7 +4,7 @@ namespace Convidera\WYSIWYG\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 
-interface ProvidesDefaultTextContents
+interface ProvidesDefaultMediaElements
 {
     public function textElements();
 
