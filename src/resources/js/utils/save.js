@@ -22,7 +22,7 @@ export function save(container) {
  * Save all element container.
  */
 export function saveAll() {
-    elements = [];
+    let elements = [];
     iterateAllElementContainers((container) => {
         elements.push({ id: container.dataset.id, value: container.innerText });
     });

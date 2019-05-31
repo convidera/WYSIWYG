@@ -1,5 +1,8 @@
+import notify from '../utils/notification';
+
+
 export default function addEventListeners(container) {
-    container.onclick = onclick;
+    container.onfocus = onfocus;
     container.onblur = onblur;
 }
 
@@ -8,11 +11,11 @@ export default function addEventListeners(container) {
 //------------------  P R I V A T E  -------------------\\
 //------------------------------------------------------\\
 
-function onclick(e) {
-    // e:    MouseEvent
+function onfocus(e) {
+    // e:    FocusEvent
     // this: element container
     
-    this.innerText = container.dataset.valueCurrent;
+    this.innerText = this.dataset.valueCurrent;
 }
 
 function onblur(e) {
@@ -23,14 +26,19 @@ function onblur(e) {
     const value = this.innerText;
 
     container.dataset.valueCurrent = value;
+    document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
     parse(value, (xmlHttp) => {
-        container.innerHtml = xmlHttp.responseText;
+        container.innerHTML = xmlHttp.responseText;
+        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
         container.blur();
+    }, (xmlHttp) => {
+        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
+        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
     });
 }
 
 function parse(data, fnSuccess, fnError = null) {
-    const mimeType = 'text/plain';
+    const mimeType = 'application/json';
     const url = '/api/WYSIWYG/markdown-parser';
     const xmlHttp = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
     xmlHttp.open('POST', url, true);
@@ -51,5 +59,5 @@ function parse(data, fnSuccess, fnError = null) {
             }
         }
     };
-    xmlHttp.send(data);
+    xmlHttp.send(JSON.stringify({ data: data }));
 }

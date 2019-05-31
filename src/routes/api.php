@@ -17,5 +17,5 @@ Route::group([
     'middleware' => [ 'web', 'auth' ],
 ], function() {
     Route::match(['put', 'patch'], '/WYSIWYG/{textElement?}', 'WYSIWYGController@update');
-    Route::post('/WYSIWYG/markdown-parser', 'MarkdownParser@parse');
+    Route::post('/WYSIWYG/markdown-parser', 'MarkdownParserController@parse');
 });

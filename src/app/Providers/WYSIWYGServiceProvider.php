@@ -94,7 +94,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $editable = isset($parameters[2]) ? $parameters[2] : 'true';
         $editable = (strtoupper($editable) == 'FALSE') ? 'false' : true;
 
-        return [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ];
+        return [ 'data' => $data, 'tag' => "$tag", 'editable' => $editable ];
     }
 
     private function expressionDataToString($dataArr) {
