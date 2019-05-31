@@ -58,7 +58,8 @@ class WYSIWYGServiceProvider extends ServiceProvider
          */
         Blade::directive('text', function($expression) {
             $data = $this->parseExpression($expression);
-            return "<?php echo view('wysiwyg::text-element', $data) ?>";
+            $dataStr = $this->expressionDataToString($data);
+            return "<?php echo view('wysiwyg::text-element', $dataStr) ?>";
         });
 
         /**
@@ -69,8 +70,8 @@ class WYSIWYGServiceProvider extends ServiceProvider
         Blade::directive('markdown', function($expression) {
             $data = $this->parseExpression($expression);
             if ( array_key_exists('data', $data) && $data['data']) {
-                return "<?php echo view('wysiwyg::markdown-element', $data) ?>";
-                return "<?php echo Illuminate\Mail\Markdown::parse($expression); ?>";
+                $dataStr = $this->expressionDataToString($data);
+                return "<?php echo view('wysiwyg::markdown-element', $dataStr) ?>";
             }
             return "<?php ob_start(); ?>";
         });
@@ -94,6 +95,10 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $editable = (strtoupper($editable) == 'FALSE') ? 'false' : true;
 
         return [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ];
+    }
+
+    private function expressionDataToString($data) {
+        return "[ 'data' => $data->data, 'tag' => '$data->tag', 'editable' => $data->editable ];"
     }
 
     private function arrayToString($array, $str = '') {
