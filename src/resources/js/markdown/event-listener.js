@@ -1,4 +1,5 @@
 import notify from '../utils/notification';
+import refresh from './refresh';
 
 
 export default function addEventListeners(container) {
@@ -25,39 +26,16 @@ function onblur(e) {
     const container = this;
     const value = this.innerText;
 
-    container.dataset.valueCurrent = value;
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
-    parse(value, (xmlHttp) => {
-        container.innerHTML = xmlHttp.responseText;
-        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+    refresh(container, value)
+    .then((value) => {
         container.blur();
-    }, (xmlHttp) => {
+    })
+    .catch((reason) => {
+        const xmlHttp = reason.xmlHttp;
         notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
+    })
+    .finally(() => {
         document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
     });
-}
-
-function parse(data, fnSuccess, fnError = null) {
-    const mimeType = 'application/json';
-    const url = '/api/WYSIWYG/markdown-parser';
-    const xmlHttp = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-    xmlHttp.open('POST', url, true);
-    xmlHttp.setRequestHeader('Content-Type', mimeType);
-    xmlHttp.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name="csrf-token"]').content);
-    xmlHttp.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                fnSuccess(this);
-            }
-            else {
-                if (fnError) {
-                    fnError(this);
-                }
-                else {
-                    notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
-                }
-            }
-        }
-    };
-    xmlHttp.send(JSON.stringify({ data: data }));
 }
