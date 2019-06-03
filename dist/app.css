@@ -935,6 +935,10 @@
   color: #fff;
 }
 
+body[cursor-wait] {
+  cursor: wait;
+}
+
 .WYSIWYG__container {
   /* reset-box-model */
   margin: 0 !important;

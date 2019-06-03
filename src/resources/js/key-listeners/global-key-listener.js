@@ -78,11 +78,28 @@ export default function globalKeyListener(e) {
  * insert: false  => disable
  * insert: null   => toggle
 **/
-function insertMode(insert = null) {
-    iterateAllElementContainers((container) => {
-        container.contentEditable = (insert === null) ? (container.contentEditable !== 'true') : insert;
-    });
-}
+const insertMode = (function() {
+    let enableInsertModeFirstTime = false;
+
+    function prevendAllInteractions() {
+        // remove all to prevend submits/buttons, links and effects
+        const fn_onclick = (e) => { return stopEvent(e); };
+        const elements = document.getElementsByTagName("*");
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].onclick = fn_onclick;
+        }
+    }
+    
+    return function(insert = null) {
+        if (! enableInsertModeFirstTime) {
+            enableInsertModeFirstTime = true;
+            prevendAllInteractions();
+        }
+        iterateAllElementContainers((container) => {
+            container.contentEditable = (insert === null) ? (container.contentEditable !== 'true') : insert;
+        });
+    };
+})();
 
 function togglePlaceholder() {
     iterateAllElementContainers((container) => {
