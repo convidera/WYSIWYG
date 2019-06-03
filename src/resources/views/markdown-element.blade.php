@@ -7,12 +7,15 @@
 @else
 
     <{{ $tag ? "$tag" : 'span' }} class="WYSIWYG__container WYSIWYG__container-markdown"
-        data-value-origin="{{ $data }}"
-        data-value-saved="{{ $data }}"
-        data-value-current="{{ $data }}"
-        data-placeholder="{{env('DISPLAY_TEXT_ELEMENT_KEYS', false) ? '>>' . $data . '<<' : ''}}"
+        data-id="{{ $data->id }}"
+        data-key="{{ $data->key }}"
+        data-mime-type="text/markdown"
+        data-value-origin="{{ $data->value }}"
+        data-value-saved="{{ $data->value }}"
+        data-value-current="{{ $data->value }}"
+        data-placeholder="{{env('DISPLAY_TEXT_ELEMENT_KEYS', false) ? '>>' . $data->key . '<<' : ''}}"
     >
-        {{ Illuminate\Mail\Markdown::parse($data) }}
+        {{ Illuminate\Mail\Markdown::parse($data->value) }}
     </{{ $tag ? "$tag" : 'span' }}>
 
 @endif

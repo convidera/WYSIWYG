@@ -80,6 +80,11 @@ class Response
         return null;
     }
 
+    public function plain($key)
+    {
+        return ($textElement = $this->__($key)) ? $textElement->value : null ;
+    }
+
     private function getLocalTextElement($key)
     {
         if (!isset($this->data->textElements)) {
