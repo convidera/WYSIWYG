@@ -16,6 +16,7 @@
 
     &-border {
         border: $container-alert-border!important;
+        display: inline-block!important;
     }
 
     &:empty:not(:focus):not(.no-placeholder):before{

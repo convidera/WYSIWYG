@@ -941,6 +941,7 @@ body[cursor-wait] {
 
 .WYSIWYG__container-border {
   border: 2px solid red !important;
+  display: inline-block !important;
 }
 
 .WYSIWYG__container:empty:not(:focus):not(.no-placeholder):before {
