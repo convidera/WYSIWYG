@@ -4,7 +4,7 @@
     "keywords": ["WYSIWYG", "composer", "package", "blade"],
     "type": "project",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.1.19",
+    "version": "0.0.1.33",
     "authors": [
         {
             "name": "Florian Heinrich",

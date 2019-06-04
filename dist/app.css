@@ -935,23 +935,13 @@
   color: #fff;
 }
 
-.WYSIWYG__container {
-  /* reset-box-model */
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  /* reset-font */
-  font: inherit !important;
-  font-size: 100% !important;
-  vertical-align: baseline !important;
-  /* styling */
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
+body[cursor-wait] {
+  cursor: wait;
 }
 
 .WYSIWYG__container-border {
   border: 2px solid red !important;
+  display: inline-block !important;
 }
 
 .WYSIWYG__container:empty:not(:focus):not(.no-placeholder):before {

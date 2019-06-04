@@ -18,6 +18,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
     {
         // controller
         $this->app->make('Convidera\WYSIWYG\Http\Controllers\WYSIWYGController');
+        $this->app->make('Convidera\WYSIWYG\Http\Controllers\MarkdownParserController');
 
         // views
         $this->loadViewsFrom(realpath(__DIR__ . '/../../resources/views'), 'wysiwyg');
@@ -46,31 +47,66 @@ class WYSIWYGServiceProvider extends ServiceProvider
             realpath(__DIR__ . '/../../../dist') => public_path('vendor/wysiwyg'),
         ], 'public');
 
+        $this->directives();
+    }
+
+    private function directives() {
         /**
          * @param data translation
          * @param tag surrounding tag
          * @param editable force normal text
          */
         Blade::directive('text', function($expression) {
-            $parameters = array_map(function($parameter) {
-                return trim($parameter);
-            } , explode(',', $expression));
-            $data = $parameters[0];
-            $tag = (isset($parameters[1])) ? $parameters[1] : 'span';
-            $tag = ($tag == 'null') ? '' : $tag;
-            $editable = isset($parameters[2]) ? $parameters[2] : 'true';
-            return "<?php echo view('wysiwyg::text-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
+            $data = $this->parseExpression($expression);
+            $dataStr = $this->expressionDataToString($data);
+            return "<?php echo view('wysiwyg::text-element', $dataStr); ?>";
+        });
+
+        /**
+         * @param data translation
+         * @param tag surrounding tag
+         * @param editable force normal text
+         */
+        Blade::directive('markdown', function($expression) {
+            $data = $this->parseExpression($expression);
+            if ( array_key_exists('data', $data) && $data['data']) {
+                $dataStr = $this->expressionDataToString($data);
+                return "<?php echo view('wysiwyg::markdown-element', $dataStr); ?>";
+            }
+            return "<?php ob_start(); ?>";
+        });
+        Blade::directive('endmarkdown', function() {
+            return "<?php echo Illuminate\Mail\Markdown::parse(ob_get_clean()); ?>";
         });
 
         Blade::directive('media', function($expression) {
-            $parameters = array_map(function($parameter) {
-                return trim($parameter);
-            } , explode(',', $expression));
-            $data = $parameters[0];
-            $tag = (isset($parameters[1])) ? $parameters[1] : 'img';
-            $tag = ($tag == 'null') ? '' : $tag;
-            $editable = isset($parameters[2]) ? $parameters[2] : 'true';
-            return "<?php echo view('wysiwyg::media-element', [ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]) ?>";
+            $data = $this->parseExpression($expression, 'img');
+            $dataStr = $this->expressionDataToString($data);
+            return "<?php echo view('wysiwyg::media-element', $dataStr) ?>";
         });
+    }
+
+    private function parseExpression($expression, $defaultTag = 'span') {
+        if ( ! $expression) return [];
+        $parameters = array_map(function($parameter) {
+            return trim($parameter);
+        } , explode(',', $expression));
+        if (count($parameters) < 1) return [];
+
+        $data = $parameters[0];
+        $data = (strtoupper($data) == 'NULL') ? '' : $data;
+        $tag = (isset($parameters[1])) ? $parameters[1] : $defaultTag;
+        $tag = (strtoupper($tag) == 'NULL') ? '' : $tag;
+        $editable = isset($parameters[2]) ? $parameters[2] : 'true';
+        $editable = (strtoupper($editable) == 'FALSE') ? 'false' : true;
+
+        return [ 'data' => $data, 'tag' => "$tag", 'editable' => $editable ];
+    }
+
+    private function expressionDataToString($dataArr) {
+        $data = $dataArr['data'];
+        $tag = $dataArr['tag'];
+        $editable = $dataArr['editable'];
+        return "[ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]";
     }
 }
