@@ -1,6 +1,4 @@
-{{dd($data)}}
-{{dd($options)}}
-@if(!Auth::user() || !$options->$changeable)
+@if(!Auth::user() || !$options->changeable)
 
     <{{ $options->tag }}
         @if(!empty($options->additionalClasses))
@@ -10,11 +8,11 @@
             {{ $options->additionalAttributes }}
         @endif
 
-        @if(!empty($data->url))
-            @if($options->asBackgoundImage)
-                style="background-image: url({{ $data->url }});"
+        @if(!empty($data->value))
+            @if($options->asBackgroundImage)
+                style="background-image: url({{ $data->value }});"
             @else
-                src="{{ $data->url }}"
+                src="{{ $data->value }}"
             @endif
         @endif
     >
@@ -30,21 +28,21 @@
         data-id="{{ $data->id }}"
         data-key="{{ $data->key }}"
         data-element-type="media"
-        data-mime-type="media"
-        data-value-origin="{{ $data->url }}"
-        data-value-saved="{{ $data->url }}"
-        data-value-current="{{ $data->url }}"
+        data-mime-type="media/image"
+        data-value-origin="{{ $data->value }}"
+        data-value-saved="{{ $data->value }}"
+        data-value-current="{{ $data->value }}"
         data-placeholder="{{ env('DISPLAY_TEXT_ELEMENT_KEYS', false) ? '>>' . $data->key . '<<' : '' }}"
 
         @if(!empty($options->additionalAttributes))
             {{ $options->additionalAttributes }}
         @endif
 
-        @if(!empty($data->url))
-            @if($options->asBackgoundImage)
-                style="background-image: url({{ $data->url }});"
+        @if(!empty($data->value))
+            @if($options->asBackgroundImage)
+                style="background-image: url({{ $data->value }});"
             @else
-                src="{{ $data->url }}"
+                src="{{ $data->value }}"
             @endif
         @endif
     >

@@ -44,6 +44,9 @@ class Response
         if ($textElement = $this->getLocalTextElement($name)) {
             return $textElement;
         }
+        if ($mediaElement = $this->getLocalMediaElement($name)) {
+            return $mediaElement;
+        }
 
         return null;
     }
@@ -62,7 +65,9 @@ class Response
     {
         throw_if(isset($this->data->$name), new Exception('Value is already set'));
         throw_if($this->getLocalTextElement($name), new Exception('TextElement is already set'));
+        throw_if($this->getLocalMediaElement($name), new Exception('MediaElement is already set'));
         throw_if($this->getSubResourceTextElement($name), new Exception('SubResource TextElement is already set'));
+        throw_if($this->getSubResourceMediaElement($name), new Exception('SubResource MediaElement is already set'));
 
         $this->$name = $value;
     }
@@ -72,17 +77,45 @@ class Response
         if ($textElement = $this->getLocalTextElement($key)) {
             return $textElement;
         }
+        if ($mediaElement = $this->getLocalMediaElement($key)) {
+            return $mediaElement;
+        }
 
-        if ($textElement = $this->getSubResourceTextElement($key)) {
-            return $textElement;
+        if ($element = $this->getSubResourceElement($key)) {
+            return $element;
         }
 
         return null;
     }
 
-    public function plain($key)
+    public function textElement($key)
     {
-        return ($textElement = $this->__($key)) ? $textElement->value : null ;
+        if ($textElement = $this->getLocalTextElement($key)) {
+            return $textElement;
+        }
+        if ($textElement = $this->getSubResourceTextElement($key)) {
+            return $textElement;
+        }
+        return null;
+    }
+    public function text($key)
+    {
+        return ($textElement = $this->textElement($key)) ? $textElement->value : null;
+    }
+
+    public function mediaElement($key)
+    {
+        if ($mediaElement = $this->getLocalMediaElement($key)) {
+            return $mediaElement;
+        }
+        if ($mediaElement = $this->getSubResourceMediaElement($key)) {
+            return $mediaElement;
+        }
+        return null;
+    }
+
+    public function mediaUrl($key) {
+        return ($mediaElement = $this->mediaElement($key)) ? $mediaElement->value : null;
     }
 
     private function getLocalTextElement($key)
@@ -98,7 +131,20 @@ class Response
         return null;
     }
 
-    private function getSubResourceTextElement($key)
+    private function getLocalMediaElement($key)
+    {
+        if (!isset($this->data->mediaElements)) {
+            return null;
+        }
+        foreach ($this->data->mediaElements as $mediaElement) {
+            if ($mediaElement->key == $key) {
+                return $mediaElement;
+            }
+        }
+        return null;
+    }
+
+    private function getSubResourceElement($key)
     {
         $splits = explode('.', $key);
         $subResource = $splits[0];
@@ -107,6 +153,32 @@ class Response
                 return $this->$subResource[$splits[1]]->__(implode('.', array_slice($splits,2)));
             }
             return $this->$subResource->__(implode('.',array_slice($splits,1)));
+        }
+        return null;
+    }
+
+    private function getSubResourceTextElement($key)
+    {
+        $splits = explode('.', $key);
+        $subResource = $splits[0];
+        if (isset($this->data->$subResource) && count($splits) > 1) {
+            if (is_array($this->$subResource)) {
+                return $this->$subResource[$splits[1]]->textElement(implode('.', array_slice($splits, 2)));
+            }
+            return $this->$subResource->textElement(implode('.', array_slice($splits, 1)));
+        }
+        return null;
+    }
+
+    private function getSubResourceMediaElement($key)
+    {
+        $splits = explode('.', $key);
+        $subResource = $splits[0];
+        if (isset($this->data->$subResource) && count($splits) > 1) {
+            if (is_array($this->$subResource)) {
+                return $this->$subResource[$splits[1]]->mediaElement(implode('.', array_slice($splits, 2)));
+            }
+            return $this->$subResource->mediaElement(implode('.', array_slice($splits, 1)));
         }
         return null;
     }

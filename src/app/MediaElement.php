@@ -13,7 +13,7 @@ class MediaElement extends UuidModel
      */
     protected $fillable = [
         'key',
-        'media_url'
+        'media_path'
     ];
 
     /**

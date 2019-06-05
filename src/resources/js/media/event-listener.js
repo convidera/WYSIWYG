@@ -21,35 +21,44 @@ export default function addEventListeners(container) {
 //------------------  P R I V A T E  -------------------\\
 //------------------------------------------------------\\
 
+function enabled() {
+    return !window.wysiwyg.insertMode;
+}
+
 function onDragenter(e) {
+    if (!enabled()) return true;
+
     // Tells the browser that we *can* drop on this target
     return stopEvent(e);
 }
 
 function onDragLeave(e) {
+    if (!enabled()) return true;
 
 }
 
 function onDragover(e) {
+    if (!enabled()) return true;
+
     // Tells the browser that we *can* drop on this target
     return stopEvent(e);
 }
 
 function onDrop(e) {
+    if (!enabled()) return true;
+
     e = e || window.event; // get window.event if e argument missing (in IE)   
 
-    const files = e.dataTransfer.files;
-    this.dataset.files = files;
-    for (let i = 0; i < files.length; i++) {
-        let file = files[i];
-        let reader = new FileReader();
-            
-        // attach event handlers here...
-        reader.addEventListener("load", (e) => {
-            this.src = reader.result;
-        }, false);
+    const file = e.dataTransfer.files[e.dataTransfer.files.length - 1];
+    window.wysiwyg.storage.media[this.dataset.id] = file;
 
-        reader.readAsDataURL(file);
-    }
+    let reader = new FileReader();
+    // attach event handlers here...
+    reader.addEventListener("load", (e) => {
+        this.style.backgroundImage = `url('${reader.result}')`;
+        //this.src = reader.result;
+    }, false);
+    reader.readAsDataURL(file);
+
     return stopEvent(e); // stops the browser from redirecting off to the image etc.
 }

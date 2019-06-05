@@ -1,6 +1,9 @@
 import stopEvent from '../utils/event-broker';
 import { saveAll } from '../utils/save';
-import { iterateAllElementContainers } from '../utils/element-container-helper';
+import {
+    iterateAllElementContainers,
+    iterateAllTextElementContainers
+} from '../utils/element-container-helper';
 
 const DELTA = 500;
 let lastKeypressTime = 0;
@@ -95,7 +98,9 @@ const insertMode = (function() {
             enableInsertModeFirstTime = true;
             prevendAllInteractions();
         }
-        iterateAllElementContainers((container) => {
+        window.wysiwyg.insertMode = insert;
+        
+        iterateAllTextElementContainers((container) => {
             container.contentEditable = (insert === null) ? (container.contentEditable !== 'true') : insert;
         });
     };

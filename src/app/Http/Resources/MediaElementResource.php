@@ -18,7 +18,7 @@ class MediaElementResource extends Resource
         return [
             'id'    => $this->id,
             'key'   => $this->key,
-            'url'   => $this->media_path ? Storage::disk()->url($this->media_path) : null,
+            'value' => $this->media_path ? Storage::disk()->url($this->media_path) : null,
         ];
     }
 }

@@ -4,9 +4,17 @@ namespace Convidera\WYSIWYG\Helpers;
 
 final class DirectivesHelper
 {
-    public static $imageTagStack = [];
+    /**
+     * @var {array} Stack of tags to close.
+     */
+    public static $tagStack = [];
 
+
+    /**
+     * No instance needed!
+     */
     private function __construct() { }
+
 
     /**
      * Create parse result object.
@@ -27,17 +35,28 @@ final class DirectivesHelper
         ];
     }
 
+
     /**
-     * Parse @text and @markdown directive arguments.
+     * Parse @text directive arguments.
      * 
      * @param {object} $data     text element data
      * @param {array}  $options  custom display options
      */
-    public static function parseTextDirectiveArguments($data, array $options) {
+    public static function parseTextDirectiveArguments($data, array $options = []) {
         $defaults = [
             'tag' => 'span',
         ];
         return self::createReturnObject($data, $options, $defaults);
+    }
+
+    /**
+     * Parse @markdown directive arguments.
+     * 
+     * @param {object} $data     text (markdown) element data
+     * @param {array}  $options  custom display options
+     */
+    public static function parseMarkdownDirectiveArguments($data, array $options = []) {
+        return self::parseTextDirectiveArguments($data, $options);
     }
 
     /**
@@ -46,12 +65,19 @@ final class DirectivesHelper
      * @param {object} $data     media (image) element data
      * @param {array}  $options  custom display options
      */
-    public static function parseImageDirectiveArguments($data, array $options) {
+    public static function parseImageDirectiveArguments($data, array $options = []) {
         $defaults = [
             'tag' => 'img',
             'asBackgroundImage' => false,
             'closeTag' => false,
         ];
-        return self::createReturnObject($data, $options, $defaults);
+        $result = self::createReturnObject($data, $options, $defaults);
+
+        if (!$result["options"]->closeTag) {
+            // save closing tag for later - @endimage
+            array_push(self::$tagStack, $result["options"]->tag);
+        }
+
+        return $result;
     }
 }

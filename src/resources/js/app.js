@@ -9,6 +9,10 @@ import addMarkdownEventListeners from './markdown/event-listener';
 import addMediaEventListeners from './media/event-listener';
 
 window.addEventListener("load", function() {
+    window.wysiwyg = window.wysiwyg || {};
+    window.wysiwyg.storage = window.wysiwyg.storage || {};
+    window.wysiwyg.storage.media = [];
+
     // attach element container keyboard listener
     iterateAllElementContainers((container) => {
         container.onkeydown = elementContainerKeyListener;
@@ -20,13 +24,13 @@ window.addEventListener("load", function() {
     });
 
     // attach media element container event listener
-    iterateAllMediaElementContainers((continer) => {
+    iterateAllMediaElementContainers((container) => {
         addMediaEventListeners(container); 
     });
-    let el = document.createElement("IMG");
-    document.getElementsByTagName("BODY")[0].prepend(el);
-    el.style.cssText = "min-height: 50px; min-width: 50px;"; 
-    addMediaEventListeners(el);
+    // let el = document.createElement("IMG");
+    // document.getElementsByTagName("BODY")[0].prepend(el);
+    // el.style.cssText = "min-height: 50px; min-width: 50px;"; 
+    // addMediaEventListeners(el);
 
     // attach global keyboard listener
     document.onkeydown = globalKeyListener;

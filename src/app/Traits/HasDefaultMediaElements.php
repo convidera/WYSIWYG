@@ -3,7 +3,6 @@
 namespace Convidera\WYSIWYG\Traits;
 
 use Convidera\WYSIWYG\MediaElement;
-use Convidera\WYSIWYG\TextElement;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasDefaultMediaElements
