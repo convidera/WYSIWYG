@@ -79,10 +79,24 @@ class WYSIWYGServiceProvider extends ServiceProvider
             return "<?php echo Illuminate\Mail\Markdown::parse(ob_get_clean()); ?>";
         });
 
-        Blade::directive('media', function($expression) {
-            $data = $this->parseExpression($expression, 'img');
-            $dataStr = $this->expressionDataToString($data);
-            return "<?php echo view('wysiwyg::media-element', $dataStr) ?>";
+        /**
+         * @param {object} $data     text element data
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'img',
+         *                                  'editable' => true,
+         *                                  'asBackgroundImage' => false
+         *                              ];
+         */
+        Blade::directive('image', function($expression) {
+            return '<?php
+                $args = \Convidera\WYSIWYG\Helpers\DirectivesHelper($expression));
+                array_push(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$imageTagStack, $args["options"]->tag);
+                echo view("wysiwyg::image-element", $args);
+            ?>';
+        });
+        Blade::directive('endimage', function() {
+            $tag = array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$imageTagStack);
+            return "<?php echo \"</$tag>\" ?>";
         });
     }
 

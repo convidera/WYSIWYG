@@ -2,10 +2,11 @@ import elementContainerKeyListener from './key-listeners/element-container-key-l
 import globalKeyListener from './key-listeners/global-key-listener';
 import {
     iterateAllElementContainers,
-    iterateAllMarkdownElementContainers
+    iterateAllMarkdownElementContainers,
+    iterateAllMediaElementContainers
 } from './utils/element-container-helper';
-import stopEvent from './utils/event-broker';
-import addEventListeners from './markdown/event-listener';
+import addMarkdownEventListeners from './markdown/event-listener';
+import addMediaEventListeners from './media/event-listener';
 
 window.addEventListener("load", function() {
     // attach element container keyboard listener
@@ -15,8 +16,17 @@ window.addEventListener("load", function() {
 
     // attach markdown element container event listener
     iterateAllMarkdownElementContainers((container) => {
-        addEventListeners(container);
+        addMarkdownEventListeners(container);
     });
+
+    // attach media element container event listener
+    iterateAllMediaElementContainers((continer) => {
+        addMediaEventListeners(container); 
+    });
+    let el = document.createElement("IMG");
+    document.getElementsByTagName("BODY")[0].prepend(el);
+    el.style.cssText = "min-height: 50px; min-width: 50px;"; 
+    addMediaEventListeners(el);
 
     // attach global keyboard listener
     document.onkeydown = globalKeyListener;

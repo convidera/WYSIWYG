@@ -6,9 +6,11 @@
 
 @else
 
-    <{{ $tag ? "$tag" : 'span' }} class="WYSIWYG__container WYSIWYG__container-markdown"
+    <{{ $tag ? "$tag" : 'span' }}
+        class="WYSIWYG__container WYSIWYG__container-text WYSIWYG__container-text-markdown"
         data-id="{{ $data->id }}"
         data-key="{{ $data->key }}"
+        data-element-type="text"
         data-mime-type="text/markdown"
         data-value-origin="{{ $data->value }}"
         data-value-saved="{{ $data->value }}"
