@@ -19,6 +19,8 @@ Route::group([
     Route::match(['put', 'patch'], '/WYSIWYG/text/{textElement}', 'WYSIWYGController@updateText');
     Route::match(['put', 'patch'], '/WYSIWYG/text/', 'WYSIWYGController@updateTexts');
 
-    Route::match(['put', 'patch'], '/WYSIWYG/media/{mediaElement}', 'WYSIWYGController@updateMedia');
-    Route::match(['put', 'patch'], '/WYSIWYG/media/', 'WYSIWYGController@updateMedias');
+    Route::match(['put', 'patch', 'post'], '/WYSIWYG/media/{mediaElement}', 'WYSIWYGController@updateMedia');
+    Route::match(['put', 'patch', 'post'], '/WYSIWYG/media/', 'WYSIWYGController@updateMedias');
+
+    Route::post('/WYSIWYG/markdown-parser', 'MarkdownParserController@parse');
 });

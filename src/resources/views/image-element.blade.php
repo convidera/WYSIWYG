@@ -24,7 +24,7 @@
 @else
 
     <{{ $options->tag }}
-        class="WYSIWYG__container WYSIWYG__container-media {{ $options->additionalClasses ?: '' }}"
+        class="WYSIWYG__container WYSIWYG__container-media WYSIWYG__container-media-image {{ $options->additionalClasses ?: '' }}"
         data-id="{{ $data->id }}"
         data-key="{{ $data->key }}"
         data-element-type="media"

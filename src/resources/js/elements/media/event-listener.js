@@ -1,6 +1,5 @@
-//import notify from '../utils/notification';
-//import refresh from './refresh';
-import stopEvent from '../utils/event-broker';
+import stopEvent from '../../utils/event-broker';
+import getStrategy from '../strategy';
 
 
 export default function addEventListeners(container) {
@@ -22,7 +21,7 @@ export default function addEventListeners(container) {
 //------------------------------------------------------\\
 
 function enabled() {
-    return !window.wysiwyg.insertMode;
+    return window.wysiwyg.insertMode;
 }
 
 function onDragenter(e) {
@@ -47,16 +46,16 @@ function onDragover(e) {
 function onDrop(e) {
     if (!enabled()) return true;
 
+    const container = this;
     e = e || window.event; // get window.event if e argument missing (in IE)   
 
     const file = e.dataTransfer.files[e.dataTransfer.files.length - 1];
-    window.wysiwyg.storage.media[this.dataset.id] = file;
+    window.wysiwyg.storage.media[container.dataset.id] = file;
 
     let reader = new FileReader();
     // attach event handlers here...
     reader.addEventListener("load", (e) => {
-        this.style.backgroundImage = `url('${reader.result}')`;
-        //this.src = reader.result;
+        getStrategy(container.dataset.mimeType).refreshValue(container, reader.result);
     }, false);
     reader.readAsDataURL(file);
 

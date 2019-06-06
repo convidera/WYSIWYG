@@ -12,6 +12,7 @@ use Convidera\WYSIWYG\Http\Resources\MediaElementResource;
 use Convidera\WYSIWYG\MediaElement;
 use Convidera\WYSIWYG\TextElement;
 use Convidera\WYSIWYG\Http\Resources\TextElementResource;
+use Illuminate\Http\Request;
 
 class WYSIWYGController extends Controller
 {
@@ -31,14 +32,16 @@ class WYSIWYGController extends Controller
         }));
     }
 
-    public function updateMedia(UpdateMediaRequest $request, $mediaElement) {
+    public function updateMedia(/*UpdateMedia*/Request $request, $mediaElement) {
+        dd('hi');
         $mediaElement = MediaElement::findOrFail($mediaElement);
         $mediaElement->value = $request->file('file');
         $mediaElement->save();
         return MediaElementResource::make($mediaElement);
     }
 
-    public function updateMedias(UpdateMediasRequest $request) {
+    public function updateMedias(/*UpdateMedias*/Request $request) {
+        dd($request->all());
         return MediaElementResource::collection(collect($request->all())->map(function ($text) {
             $mediaElement = MediaElement::findOrFail($text['id']);
             $mediaElement->value = $text['value'];

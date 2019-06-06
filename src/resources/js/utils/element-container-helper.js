@@ -59,3 +59,15 @@ export function iterateAllMediaElementContainers(callback) {
         callback(containers[i]);
     }
 }
+
+/**
+ * Iterate all media elements 'media/image'
+ * 
+ * @param {function} callback function called on each element.
+ */
+export function iterateAllImageElementContainers(callback) {
+    const containers = document.getElementsByClassName("WYSIWYG__container-media-image") || [];
+    for(let i = 0; i < containers.length; i++) {
+        callback(containers[i]);
+    }
+}

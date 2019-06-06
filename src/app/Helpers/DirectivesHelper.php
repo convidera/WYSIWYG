@@ -31,7 +31,7 @@ final class DirectivesHelper
         ];
         return [
             'data' => $data,
-            'options' => (object) array_merge($defaults, $options, $globalDefaults)
+            'options' => (object) array_merge($globalDefaults, $defaults, $options)
         ];
     }
 

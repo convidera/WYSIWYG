@@ -107,8 +107,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
             return $this->imageElementCode($expression);
         });
         Blade::directive('endimageraw', function() {
-            $tag = array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack);
-            return "<?php echo \"</$tag>\" ?>";
+            return '<?php echo "</" . array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack) . ">" ?>';;
         });
         /**
          * @param {string} $key      image element key
@@ -123,8 +122,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
             return $this->imageElementCode($preparedExpression);
         });
         Blade::directive('endimage', function() {
-            $tag = array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack);
-            return "<?php echo \"</$tag>\" ?>";
+            return '<?php echo "</" . array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack) . ">" ?>';
         });
     }
 

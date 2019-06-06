@@ -5,10 +5,11 @@ import {
     iterateAllMarkdownElementContainers,
     iterateAllMediaElementContainers
 } from './utils/element-container-helper';
-import addMarkdownEventListeners from './markdown/event-listener';
-import addMediaEventListeners from './media/event-listener';
+import addMarkdownEventListeners from './elements/text/markdown/event-listener';
+import addMediaEventListeners from './elements/media/event-listener';
 
 window.addEventListener("load", function() {
+    // initialize storage
     window.wysiwyg = window.wysiwyg || {};
     window.wysiwyg.storage = window.wysiwyg.storage || {};
     window.wysiwyg.storage.media = [];
@@ -27,11 +28,15 @@ window.addEventListener("load", function() {
     iterateAllMediaElementContainers((container) => {
         addMediaEventListeners(container); 
     });
-    // let el = document.createElement("IMG");
-    // document.getElementsByTagName("BODY")[0].prepend(el);
-    // el.style.cssText = "min-height: 50px; min-width: 50px;"; 
-    // addMediaEventListeners(el);
 
     // attach global keyboard listener
     document.onkeydown = globalKeyListener;
+
+    // prototypes
+    // only implement if no native implementation is available
+    if (typeof Array.isArray === 'undefined') {
+        Array.isArray = function(obj) {
+            return Object.prototype.toString.call(obj) === '[object Array]';
+        };
+    }
 });

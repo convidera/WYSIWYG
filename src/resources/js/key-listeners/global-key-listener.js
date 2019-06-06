@@ -49,7 +49,7 @@ export default function globalKeyListener(e) {
         return stopEvent(e);
     }
 
-    // toggle insert mode
+    // toggle placeholder mode
     if (isCtrlOrMeta && e.code === 'KeyP') {
         // CRTL+E or CMD+E  =>  toggle insert mode
         togglePlaceholder();
@@ -67,6 +67,7 @@ export default function globalKeyListener(e) {
     if (e.code === 'Escape') {
         // ESC  =>  disable insert mode -> normal mode
         insertMode(false);
+        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
         return stopEvent(e);
     }
 }
