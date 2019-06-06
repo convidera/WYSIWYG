@@ -12,16 +12,36 @@ export default function addEventListeners(container) {
 //------------------  P R I V A T E  -------------------\\
 //------------------------------------------------------\\
 
-function onfocus(e) {
+let blurInProgess = false;
+
+function onfocus(e, container = null) {
     // e:    FocusEvent
     // this: element container
-    
-    this.innerText = this.dataset.valueCurrent;
+
+    container = container || this;
+
+    if (blurInProgess) {
+        // Problem: Between blur need some time to parse
+        //   and change the content (innerText/innerHTML).
+        //   If you focus before the blur is finish you
+        //   will change the markdown html not markdown code.
+        setTimeout(() => { onfocus(e, container); }, 100);
+    }
+    else {
+        container.innerText = container.dataset.valueCurrent;
+    }
 }
 
 function onblur(e) {
     // e:    FocusEvent
     // this: element container
+
+    if (this.dataset.preventBlurEvent === 'true') {
+        this.dataset.preventBlurEvent = 'false';
+        return;
+    }
+
+    blurInProgess = true;
 
     const container = this;
     const value = this.innerText;
@@ -29,7 +49,6 @@ function onblur(e) {
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
     refresh(container, value)
     .then((value) => {
-        container.blur();
     })
     .catch((reason) => {
         const xmlHttp = reason.xmlHttp;
@@ -37,5 +56,7 @@ function onblur(e) {
     })
     .finally(() => {
         document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+        blurInProgess = false;
     });
+    return;
 }

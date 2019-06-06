@@ -1,7 +1,7 @@
 @if(!Auth::user() || !$options->changeable)
 
     {!! empty($options->tag) ? '' : "<$options->tag>" !!}
-        {{ $data ? Illuminate\Mail\Markdown::parse($data) : '' }}
+        {{ $data ? Illuminate\Mail\Markdown::parse($data->value) : '' }}
     {!! empty($options->tag) ? '' : "</$options->tag>" !!}
 
 @else

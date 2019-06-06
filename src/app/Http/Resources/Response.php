@@ -150,7 +150,8 @@ class Response
         $subResource = $splits[0];
         if (isset($this->data->$subResource) && count($splits) > 1) {
             if (is_array($this->$subResource)) {
-                return $this->$subResource[$splits[1]]->__(implode('.', array_slice($splits,2)));
+                return isset($this->$subResource[$splits[1]]) ?
+                    $this->$subResource[$splits[1]]->__(implode('.', array_slice($splits,2))) : null;
             }
             return $this->$subResource->__(implode('.',array_slice($splits,1)));
         }

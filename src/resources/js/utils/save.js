@@ -16,15 +16,17 @@ export function save(container) {
     console.log(container);
 
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+    container.dataset.preventBlurEvent = 'true';
+    container.blur();
     update({ id: id, value: value }, elementType, (xmlHttp) => {
         const data = JSON.parse(xmlHttp.responseText);
         refresh(container, data)
         .then((value) => {
             notify('success', 'Changes saved successfully.');
-            container.blur();
+            //container.blur();
         })
         .catch((reason) => {
-            console.log(reason);
+            console.error(reason);
             if (! reason || reason.xmlHttp) return;
             const xmlHttp = reason.xmlHttp;
             notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
@@ -92,6 +94,8 @@ function refresh(container, data) {
 }
 
 function saveAllElements(elements, elementType) {
+    document.activeElement.dataset.preventBlurEvent = 'true';
+    document.activeElement.blur();
     update(elements, elementType, (xmlHttp) => {
         let dataset = JSON.parse(xmlHttp.responseText);
         let promises = [];
