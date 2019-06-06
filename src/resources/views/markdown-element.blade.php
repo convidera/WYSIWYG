@@ -1,7 +1,7 @@
 @if(!Auth::user() || !$editable)
 
     {!! $tag ? "<$tag>" : '' !!}
-        {{ $data ? Illuminate\Mail\Markdown::parse($data) : '' }}
+        {{ $data ? Illuminate\Mail\Markdown::parse($data->value) : '' }}
     {!! $tag ? "</$tag>" : '' !!}
 
 @else
