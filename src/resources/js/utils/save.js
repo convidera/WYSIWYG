@@ -14,15 +14,17 @@ export function save(container) {
     const value = container.innerText;
 
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+    container.dataset.preventBlurEvent = 'true';
+    container.blur();
     update({ id: id, value: value }, id, (xmlHttp) => {
         const data = JSON.parse(xmlHttp.responseText);
         refresh(container, data)
         .then((value) => {
             notify('success', 'Changes saved successfully.');
-            container.blur();
+            //container.blur();
         })
         .catch((reason) => {
-            console.log(reason);
+            console.error(reason);
             if (! reason || reason.xmlHttp) return;
             const xmlHttp = reason.xmlHttp;
             notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
@@ -44,6 +46,8 @@ export function saveAll() {
         elements.push({ id: container.dataset.id, value: getValue(container) });
     });
 
+    document.activeElement.dataset.preventBlurEvent = 'true';
+    document.activeElement.blur();
     update(elements, null, (xmlHttp) => {
         let dataset = JSON.parse(xmlHttp.responseText);
         let promises = [];
@@ -62,10 +66,10 @@ export function saveAll() {
         Promise.all(promises)
         .then((value) => {
             notify('success', 'All changes saved successfully.');
-            document.activeElement.blur();
+            //document.activeElement.blur();
         })
         .catch((reason) => {
-            console.log(reason);
+            console.error(reason);
             if (! reason || reason.xmlHttp) return;
             const xmlHttp = reason.xmlHttp;
             notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
