@@ -34,6 +34,10 @@ export function saveAll() {
     let promises = [];
     iterateAllStrategies((name, strategy) => {
         promises.push(strategy.saveAll().then((xmlHttp) => {
+            if ( ! xmlHttp) {
+                return Promise.resolve(); // no updates
+            }
+
             let dataset = JSON.parse(xmlHttp.responseText);
             let refreshPromises = [];
             
@@ -56,6 +60,10 @@ export function saveAll() {
 
     Promise.all(promises)
     .then(() => {
+        // clear storage
+        window.wysiwyg.storage.media = [];        
+
+        // notify user
         notify('success', 'All changes saved successfully.');
         return Promise.resolve();
     })
@@ -80,7 +88,7 @@ function handleError(reason) {
     if (!reason || !reason.error) return Promise.resolve();
     if (typeof reason.error.obj.status !== 'undefined' && typeof reason.error.obj.status !== 'undefined') {
         const xmlHttp = reason.error.obj;
-        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
+        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);
         return Promise.resolve();
     }
     if (typeof reason.error.msg !== 'undefined') {

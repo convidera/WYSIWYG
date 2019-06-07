@@ -13,9 +13,19 @@ class UpdateMediaRequest extends BaseRequest
      */
     public function rules()
     {
-        return [
-            'id'    => $this->isValidUuidValidator('nullable'),
-            'file' => 'nullable|file',
-        ];
+        $rules = [];
+        $rules['ids'] = $this->isValidMediaElementUuidValidator('required');
+
+        if ( ! $this->hasFile('file')) {
+            // Unvalid! - No files in attribute files.
+            $rules['file'] = [ function ($attribute, $value, $fail) {
+                $fail("$attribute is not a valid file array.");
+            }];
+            return $rules;
+        }
+
+        $file = $this->file('file');
+        $rules['file'] = $this->getMediaFileRules($file);
+        return $rules;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Convidera\WYSIWYG\Nova\Fields;
 
-use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -10,11 +9,10 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class ComputedMediaElement extends Image
 {
     public $showOnDetail = false;
-    protected $length;
 
     public function resolveAttribute($resource, $attribute)
     {
-        return ($mediaElement = $resource->mediaElements()->key($attribute)->first()) ? $mediaElement->value : '';
+        return ($mediaElement = $resource->mediaElements()->key($attribute)->first()) ? $mediaElement->media_path : '';
     }
 
     public function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
@@ -38,12 +36,12 @@ class ComputedMediaElement extends Image
                 return $model->mediaElements()->create([
                     'media_elementable_id' => $model->id,
                     'key' => $attribute,
-                    'url' => $isNull ? null : $value
+                    'media_path' => $isNull ? null : $value
                 ]);
             }
 
             $mediaElement->update([
-                'url' => $isNull ? null : $value
+                'media_path' => $isNull ? null : $value
             ]);
         }
     }

@@ -15,7 +15,7 @@ class UpdateTextsRequest extends BaseRequest
     {
         return [
             '*'       => 'required|array|min:1',
-            '*.id'    => $this->isValidUuidValidator('required'),
+            '*.id'    => $this->isValidTextElementUuidValidator('required'),
             '*.value' => 'nullable|string'
         ];
     }

@@ -2,8 +2,7 @@
 
 namespace Convidera\WYSIWYG\Http\Controllers;
 
-use App\Http\Controllers\Controller;;
-
+use App\Http\Controllers\Controller;
 use Convidera\WYSIWYG\Http\Requests\UpdateMediaRequest;
 use Convidera\WYSIWYG\Http\Requests\UpdateMediasRequest;
 use Convidera\WYSIWYG\Http\Requests\UpdateTextRequest;
@@ -13,6 +12,7 @@ use Convidera\WYSIWYG\MediaElement;
 use Convidera\WYSIWYG\TextElement;
 use Convidera\WYSIWYG\Http\Resources\TextElementResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WYSIWYGController extends Controller
 {
@@ -40,13 +40,19 @@ class WYSIWYGController extends Controller
         return MediaElementResource::make($mediaElement);
     }
 
-    public function updateMedias(/*UpdateMedias*/Request $request) {
-        dd($request->all());
-        return MediaElementResource::collection(collect($request->all())->map(function ($text) {
-            $mediaElement = MediaElement::findOrFail($text['id']);
-            $mediaElement->value = $text['value'];
+    public function updateMedias(UpdateMediasRequest $request) {
+        $ids   = $request->input('ids');
+        $files = $request->file('files');
+
+        return MediaElementResource::collection(collect(array_map(function($file, $id) {
+            $mediaElement = MediaElement::findOrFail($id);
+            $path = 'wysiwyg/media';
+            $filename = $file->getClientOriginalName();
+            $fullpath = "$path/$filename";
+            Storage::disk('public')->putFileAs($path, $file, $filename);
+            $mediaElement->media_path = $fullpath;
             $mediaElement->save();
             return $mediaElement;
-        }));
+        }, $files, $ids)));
     }
 }

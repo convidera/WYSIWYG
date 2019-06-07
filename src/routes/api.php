@@ -16,6 +16,8 @@ Route::group([
     'namespace'  => 'Convidera\WYSIWYG\Http\Controllers',
     'middleware' => [ 'web', 'auth' ],
 ], function() {
+    Route::get('/WYSIWYG/config', 'ConfigController@showConfig');
+
     Route::match(['put', 'patch'], '/WYSIWYG/text/{textElement}', 'WYSIWYGController@updateText');
     Route::match(['put', 'patch'], '/WYSIWYG/text/', 'WYSIWYGController@updateTexts');
 

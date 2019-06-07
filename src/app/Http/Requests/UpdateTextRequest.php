@@ -14,7 +14,7 @@ class UpdateTextRequest extends BaseRequest
     public function rules()
     {
         return [
-            'id'    => $this->isValidUuidValidator('nullable'),
+            'id'    => $this->isValidTextElementUuidValidator('nullable'),
             'value' => 'nullable|string',
         ];
     }

@@ -97,7 +97,7 @@ function parse(markdownRaw, fnSuccess, fnError = null) {
                     fnError(this);
                 }
                 else {
-                    notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
+                    notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);
                 }
             }
         }

@@ -6,10 +6,16 @@
  * @return {Promise}
  */
 export function save(data) {
-    if (Array.isArray(data)) {
-        return m_save(data.map(prepareTransferData), null);
+    const preparedData = prepareTransferData(data);
+    if (preparedData) {
+        return m_save(
+            prepareTransferData(data),
+            Array.isArray(data) ? null : data.dataset.id
+        );
     }
-    return m_save(prepareTransferData(data), data.dataset.id);
+
+    // no changes
+    return Promise.resolve();
 }
 
 
@@ -17,11 +23,36 @@ export function save(data) {
 //------------------  P R I V A T E  -------------------\\
 //------------------------------------------------------\\
 
-function prepareTransferData(container) {
-    return {
-        id: container.dataset.id,
-        value: window.wysiwyg.storage.media[container.dataset.id]
-    };
+function prepareTransferData(data) {
+    if (Array.isArray(data)) {
+        // save multiple
+        let formData = new FormData();
+        let elementCounter = 0;
+        for (let i = 0; i < data.length; i++) {
+            const id = data[i].dataset.id;
+            const file = window.wysiwyg.storage.media[id];
+            if (file) {
+                formData.append('ids[]', id);
+                formData.append('files[]', file);
+                elementCounter++;
+            }
+        }
+        if (elementCounter > 0) {
+            return formData;
+        }
+        return null;
+    }
+
+    // save single
+    const id = data.dataset.id;
+    const file = window.wysiwyg.storage.media[id];
+    if (file) {
+        let formData = new FormData();
+        formData.append('id', id);
+        formData.append('file', file);
+        return formData;
+    }
+    return null;
 }
 
 function m_save(data, id) {
@@ -42,9 +73,6 @@ function m_save(data, id) {
                 }
             }
         };
-
-        let formData = new FormData();
-        formData.append('data', data);
-        xmlHttp.send(formData);
+        xmlHttp.send(data);
     });
 }

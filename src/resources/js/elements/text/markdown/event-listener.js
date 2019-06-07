@@ -60,7 +60,7 @@ function handleError(reason) {
     if (!reason || !reason.error) return Promise.resolve();
     if (typeof reason.error.obj.status !== 'undefined' && typeof reason.error.obj.status !== 'undefined') {
         const xmlHttp = reason.error.obj;
-        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
+        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);
         return Promise.resolve();
     }
     if (typeof reason.error.msg !== 'undefined') {
