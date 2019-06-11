@@ -63,6 +63,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         });
         /**
          * @param {string} $key      text element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
          * @param {array}  $options  custom display options e.g.: [
          *                                  'tag' => 'span',
          *                                  'editable' => true
@@ -85,6 +86,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         });
         /**
          * @param {string} $key      text element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
          * @param {array}  $options  custom display options e.g.: [
          *                                  'tag' => 'span',
          *                                  'editable' => true
@@ -100,7 +102,8 @@ class WYSIWYGServiceProvider extends ServiceProvider
          * @param {array}  $options  custom display options e.g.: [
          *                                  'tag' => 'img',
          *                                  'editable' => true,
-         *                                  'asBackgroundImage' => false
+         *                                  'asBackgroundImage' => false,
+         *                                  'closeTag' => true
          *                              ];
          */
         Blade::directive('imageraw', function($expression) {
@@ -111,10 +114,12 @@ class WYSIWYGServiceProvider extends ServiceProvider
         });
         /**
          * @param {string} $key      image element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
          * @param {array}  $options  custom display options e.g.: [
          *                                  'tag' => 'img',
          *                                  'editable' => true,
-         *                                  'asBackgroundImage' => false
+         *                                  'asBackgroundImage' => false,
+         *                                  'closeTag' => true
          *                              ];
          */
         Blade::directive('image', function($expression) {
@@ -127,14 +132,25 @@ class WYSIWYGServiceProvider extends ServiceProvider
     }
 
     private function replaceKeyWithElement($expression, $fnName) {
-        // "'key', [ 'options' => true ]"  ->  "$data->xxxx('key'), [ 'options' => true ]"
-        // '"key", [ "options" => true ]'  ->  '$data->xxxx("key"), [ "options" => true ]'
         // xxxx e.g.: mediaElement, textElement etc. (source Response)
-        $pattern = '/(\'(.*?)\'|"(.*?)")\s*(,)?/';
+        // "'key'"                                   ->  "$data->xxxx('key')"
+        // "'key', \$var"                            ->  "$var->xxxx('key')"
+        // "'key', [ 'options' => true ]"            ->  "$data->xxxx('key', [ "options" => true ])"
+        // "'key', \$var, [ 'options' => true ]"     ->  "$var->xxxx('key', [ "options" => true ])"
+        // '"key"'                                   ->  "$data->xxxx('key')"
+        // '"key", $var'                             ->  "$var->xxxx('key')"
+        // '"key", [ "options" => true ]'            ->  "$data->xxxx('key', [ "options" => true ])"
+        // '"key", $var, [ "options" => true ]'      ->  "$var->xxxx('key', [ "options" => true ])"
+
+        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+))?\s*((?<options>,\s*.*)\s*)?$/';
         $matches = [];
         preg_match($pattern, $expression, $matches, PREG_OFFSET_CAPTURE, 0);
-        $replace = '$data->' . $fnName . '($1)$4';
-        return preg_replace($pattern, $replace, $expression, 1);
+
+        $key = array_key_exists('key1', $matches) && !empty($matches['key1'][0]) ? $matches['key1'][0] : $matches['key2'][0];
+        $var = array_key_exists('var', $matches) && !empty($matches['var'][0]) ? $matches['var'][0] : '$data';
+        $options = array_key_exists('options', $matches) && !empty($matches['options'][0]) ? $matches['options'][0] : '';
+
+        return "${var}->${fnName}('${key}'${options})";
     }
 
     private function textElementCode($expression) {

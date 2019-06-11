@@ -15,6 +15,12 @@
                 src="{{ $data->value }}"
             @endif
         @endif
+
+        @foreach($data->textElements as $textElement)
+            @if(!empty($textElement->value))
+                {{ $textElement->key }}="{{ str_replace('"', '\"', $textElement->value) }}"
+            @endif
+        @endforeach
     >
 
     @if($options->closeTag)
@@ -45,6 +51,12 @@
                 src="{{ $data->value }}"
             @endif
         @endif
+
+        @foreach($data->textElements as $textElement)
+            @if(!empty($textElement->value))
+                {{ $textElement->key }}="{{ str_replace('"', '\"', $textElement->value) }}"
+            @endif
+        @endforeach
     >
 
     @if($options->closeTag)

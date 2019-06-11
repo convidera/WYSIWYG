@@ -3,9 +3,29 @@
 namespace Convidera\WYSIWYG;
 
 use Convidera\WYSIWYG\UuidModel;
+use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
+use Convidera\WYSIWYG\Traits\HasDefaultTextElements;
 
-class MediaElement extends UuidModel
+class MediaElement extends UuidModel implements ProvidesDefaultTextElements
 {
+    use HasDefaultTextElements;
+    
+    /**
+     * The default text element keys
+     * which will create if a media element is created.
+     * These text elements will be attributes of the media tag in html.
+     * Key is attribute name and will be filled with the value.
+     * 
+     * e.g. $defaultTextKeys = [ 'alt' => 'My greate image!' ]
+     *      => <img ... alt='My greate image!'></img>
+     *
+     * @var array
+     */
+   static protected $defaultTextKeys = [
+       'alt',
+       'description',
+   ];
+
     /**
      * The attributes that are mass assignable.
      *
