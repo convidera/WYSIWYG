@@ -142,7 +142,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         // '"key", [ "options" => true ]'            ->  "$data->xxxx('key', [ "options" => true ])"
         // '"key", $var, [ "options" => true ]'      ->  "$var->xxxx('key', [ "options" => true ])"
 
-        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+))?\s*((?<options>,\s*.*)\s*)?$/';
+        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+))?\s*((?<options>,\s*.*)\s*)?$/s';
         $matches = [];
         preg_match($pattern, $expression, $matches, PREG_OFFSET_CAPTURE, 0);
 
@@ -150,7 +150,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $var = array_key_exists('var', $matches) && !empty($matches['var'][0]) ? $matches['var'][0] : '$data';
         $options = array_key_exists('options', $matches) && !empty($matches['options'][0]) ? $matches['options'][0] : '';
 
-        return "${var}->${fnName}('${key}'${options})";
+        return "${var}->${fnName}('${key}')${options}";
     }
 
     private function textElementCode($expression) {

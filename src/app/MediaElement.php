@@ -23,7 +23,7 @@ class MediaElement extends UuidModel implements ProvidesDefaultTextElements
      */
    static protected $defaultTextKeys = [
        'alt',
-       'description',
+       'title',
    ];
 
     /**
