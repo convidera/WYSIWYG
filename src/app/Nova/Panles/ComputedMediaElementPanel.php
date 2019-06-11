@@ -12,13 +12,14 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
      *
      * @param string                  $name
      * @param UuidModel|Closure|array $fields
+     * @param array                   $displayOnIndex
      *
-     * @param int                     $wordCount
-     * @param array                   $displayOnindex
+     * @param string|null             $path
+     * @param bool                    $usesClientOriginalName
      *
-     * @return \Laravel\Nova\Panel
+     * @return ComputedMediaElementPanel
      */
-    public static function make($name, $fields = [], $displayOnindex = [])
+    public static function make($name, $fields = [], $displayOnIndex = [], string $path = null, bool $usesClientOriginalName = false)
     {
         if (is_array($fields) || is_callable($fields)) {
             return new self($name, $fields);
@@ -28,8 +29,16 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
         $computedMediaElementFields = [];
         foreach ($fields as $field) {
             $computedMediaElement = ComputedMediaElement::make($field);
-            if ($displayOnindex && !in_array($field, $displayOnindex)) {
+            if ($displayOnIndex && !in_array($field, $displayOnIndex)) {
                 $computedMediaElement->hideFromIndex();
+            }
+            if ($path) {
+                $computedMediaElement->path($path);
+            }
+            if ($usesClientOriginalName) {
+                $computedMediaElement->storeAs(function ($request) {
+                    return $request->media->getClientOriginalName();
+                });
             }
             $computedMediaElementFields[] = $computedMediaElement;
         }

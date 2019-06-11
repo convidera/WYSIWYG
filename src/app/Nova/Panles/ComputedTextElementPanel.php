@@ -14,11 +14,11 @@ class ComputedTextElementPanel extends \Laravel\Nova\Panel
      * @param UuidModel|Closure|array $fields
      *
      * @param int                     $wordCount
-     * @param array                   $displayOnindex
+     * @param array                   $displayOnIndex
      *
-     * @return \Laravel\Nova\Panel
+     * @return ComputedTextElementPanel
      */
-    public static function make($name, $fields = [], $wordCount = 7, $displayOnindex = [])
+    public static function make($name, $fields = [], $wordCount = 7, $displayOnIndex = [])
     {
         if (is_array($fields) || is_callable($fields)) {
             return new self($name, $fields);
@@ -28,7 +28,7 @@ class ComputedTextElementPanel extends \Laravel\Nova\Panel
         $computedTextElementFields = [];
         foreach ($fields as $field) {
             $computedTextElement = ComputedTextElement::make($field)->setLength($wordCount);
-            if ($displayOnindex && !in_array($field, $displayOnindex)) {
+            if ($displayOnIndex && !in_array($field, $displayOnIndex)) {
                 $computedTextElement->hideFromIndex();
             }
             $computedTextElementFields[] = $computedTextElement;

@@ -18,7 +18,7 @@ class CreateMediaElementsTable extends Migration
             $table->string('media_elementable_id');
             $table->string('media_elementable_type');
             $table->string('key');
-            $table->text('media_path')->nullable();
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }

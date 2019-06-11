@@ -50,7 +50,7 @@ class WYSIWYGController extends Controller
             $filename = $file->getClientOriginalName();
             $fullpath = "$path/$filename";
             Storage::disk('public')->putFileAs($path, $file, $filename);
-            $mediaElement->media_path = $fullpath;
+            $mediaElement->value = $fullpath;
             $mediaElement->save();
             return $mediaElement;
         }, $files, $ids)));

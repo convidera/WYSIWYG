@@ -33,7 +33,7 @@ class MediaElement extends UuidModel implements ProvidesDefaultTextElements
      */
     protected $fillable = [
         'key',
-        'media_path'
+        'value'
     ];
 
     /**

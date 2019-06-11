@@ -16,9 +16,10 @@ class MediaElementResource extends Resource
     public function toArray($request)
     {
         return [
-            'id'    => $this->id,
-            'key'   => $this->key,
-            'value' => $this->media_path ? Storage::disk()->url($this->media_path) : null,
+            'id'           => $this->id,
+            'key'          => $this->key,
+            'value'        => $this->value ? Storage::disk()->url($this->value) : null,
+            'textElements' => TextElementResource::collection($this->textElements),
         ];
     }
 }

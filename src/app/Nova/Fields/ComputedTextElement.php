@@ -37,18 +37,13 @@ class ComputedTextElement extends Text
                     : in_array($value, (array) $this->nullValues);
             }
 
-            $textElement = $model->textElements()->key($attribute)->first();
-
-            if (!$textElement) {
-                $model->id = $model->id ?? Uuid::uuid4()->toString();
-                return $model->textElements()->create([
-                    'text_elementable_id' => $model->id,
-                    'key' => $attribute,
-                    'value' => $isNull ? null : $value
-                ]);
-            }
-
-            $textElement->update([
+            $model->id = $model->id ?? Uuid::uuid4()->toString();
+            return $model->textElements()->updateOrCreate([
+                'text_elementable_id' => $model->id,
+                'key' => $this->name,
+            ],[
+                'text_elementable_id' => $model->id,
+                'key' => $this->name,
                 'value' => $isNull ? null : $value
             ]);
         }
