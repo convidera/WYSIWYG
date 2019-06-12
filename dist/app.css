@@ -941,6 +941,9 @@ body[cursor-wait] {
 
 .WYSIWYG__container-border {
   border: 2px solid red !important;
+}
+
+.WYSIWYG__container-border-no-inline {
   display: inline-block !important;
 }
 

@@ -116,8 +116,12 @@ function togglePlaceholder() {
 function startBorderAnimation() {
     iterateAllElementContainers((container) => {
         container.classList.add("WYSIWYG__container-border");
+        if (getComputedStyle(container, null).display === 'inline') {
+            container.classList.add("WYSIWYG__container-border-no-inline");
+        }
         setTimeout(function() {
             this.classList.remove("WYSIWYG__container-border");
+            this.classList.remove("WYSIWYG__container-border-no-inline");
         }.bind(container), 2000);
     });
 }

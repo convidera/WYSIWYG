@@ -7,9 +7,28 @@
  */
 export function save(data) {
     if (Array.isArray(data)) {
-        return m_save(data.map(prepareTransferData), null);
+        // save multiple
+        const preparedTransferData = data.reduce(function(result, container) {
+            let preparedData = null;
+            if ((preparedData = prepareTransferData(container)) !== null) {
+                result.push(preparedData);
+            }
+            return result;
+        }, []);
+        if (preparedTransferData.length < 1) {
+            // no changes
+            return Promise.resolve();
+        }
+        return m_save(preparedTransferData, null);
     }
-    return m_save(prepareTransferData(data), data.dataset.id);
+
+    // save single
+    const preparedTransferData = prepareTransferData(data);
+    if (preparedTransferData === null) {
+        // no changes
+        return Promise.resolve();
+    }
+    return m_save(preparedTransferData, data.dataset.id);
 }
 
 
@@ -18,7 +37,12 @@ export function save(data) {
 //------------------------------------------------------\\
 
 function prepareTransferData(container) {
-    return { id: container.dataset.id, value: container.innerText };
+    const value = container.dataset.valueCurrent || container.innerText;
+    if (value === container.dataset.valueSaved) {
+        // no changes
+        return null;
+    }
+    return { id: container.dataset.id, value: value };
 }
 
 function m_save(data, id) {
