@@ -100,7 +100,7 @@ class Response
         return $this->getElement('media', $key);
     }
 
-    public function mediaUrl($key) {
+    public function media($key) {
         return ($mediaElement = $this->mediaElement($key)) ? $mediaElement->value : null;
     }
 

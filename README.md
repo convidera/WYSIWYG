@@ -13,9 +13,53 @@ to edit auth is needed
 - 
 
 ## Installation
+If this Project is in a public repository:
 ```bash
 composer require convidera/wysiwyg
 ```
+If this Project is in a private repository:
+
+The `composer.json` either has to reference the git repository
+```json
+   "repositories": [
+        {
+            ...
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:convidera/WYSIWYG.git"
+        }
+    ]
+```
+or the local path
+```json
+   "repositories": [
+        {
+            ...
+        },
+        {
+            "type": "path",
+            "url": "../WYSIWYG.git"
+        }
+    ]
+```
+which might has to be included into the app docker container or installed from outside the box.
+
+For readaccess to the private git repository the native machines ssh key added to the `docker-compose.override.yml` and the `docker-compose.ci.yml`.
+
+```yaml
+volumes:
+      - ~/.ssh:/var/www/.ssh
+```
+or
+```yaml
+volumes:
+     - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa
+     - ~/.ssh/id_rsa.pub:/var/www/.ssh/id_rsa.pub
+     - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts
+```
+
+## Setup
 
 For Laravel < 5.5 you need to add the service provider in your `config/app.php` manually.
 ```php
