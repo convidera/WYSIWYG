@@ -7,6 +7,7 @@ import {
 } from './utils/element-container-helper';
 import addMarkdownEventListeners from './elements/text/markdown/event-listener';
 import addMediaEventListeners from './elements/media/event-listener';
+import stopEvent from './utils/event-broker';
 
 window.addEventListener("load", function() {
     // initialize storage
@@ -31,6 +32,15 @@ window.addEventListener("load", function() {
 
     // attach global keyboard listener
     document.onkeydown = globalKeyListener;
+
+    // prevent all drap and drop events globally
+    const preventDropEvent = (e) => {
+        e.dataTransfer.effectAllowed = 'none';
+        e.dataTransfer.dropEffect = 'none';
+        return stopEvent(e);
+    };
+    document.getElementsByTagName("BODY")[0].addEventListener('dragover', preventDropEvent, false);
+    document.getElementsByTagName("BODY")[0].addEventListener('drop',     preventDropEvent, false);
 
     // prototypes
     // only implement if no native implementation is available

@@ -22,10 +22,19 @@ export default function globalKeyListener(e) {
     // check if is CMD (on mac) or CTRL (other) pressed
     const isCtrlOrMeta = window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey;
 
-    // save all
-    if (isCtrlOrMeta && e.shiftKey && e.code === 'KeyS') {
-        // CRTL+SHIFT+A or CMD+SHIFT+A  =>  save all
-        saveAll();
+    // save
+    if (isCtrlOrMeta && e.code === 'KeyS') {
+        if (e.shiftKey) {
+            // save all
+            // CRTL+SHIFT+S or CMD+SHIFT+S  =>  save all
+            saveAll();
+            return stopEvent(e);
+        }
+
+        // CRTL+S or CMD+S  =>  ask user to save all
+        if (confirm('No element selected. Do you want to save all elements?')) {
+            saveAll();
+        }
         return stopEvent(e);
     }
 

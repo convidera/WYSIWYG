@@ -36,15 +36,18 @@ function onblur(e) {
     // e:    FocusEvent
     // this: element container
 
-    if (this.dataset.preventBlurEvent === 'true') {
-        this.dataset.preventBlurEvent = 'false';
+    const container = this;
+    const value = this.innerText;
+
+    if (container.dataset.preventBlurEvent === 'true') {
+        // At least save changes.
+        container.dataset.valueCurrent = value;
+
+        container.dataset.preventBlurEvent = 'false';
         return;
     }
 
     blurInProgess = true;
-
-    const container = this;
-    const value = this.innerText;
 
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
     getStrategy('text/markdown').refreshValue(container, value)

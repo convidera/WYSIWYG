@@ -9,6 +9,9 @@ import getStrategy, { iterateAllStrategies } from '../elements/strategy';
  */
 export function save(container) {
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+
+    container.dataset.preventBlurEvent = 'true';
+    container.blur();
     
     const strategy = getStrategy(container.dataset.mimeType);
     strategy.save(container)
@@ -20,9 +23,6 @@ export function save(container) {
     .finally(() => {
         document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
     });
-
-    container.dataset.preventBlurEvent = 'true';
-    container.blur();
 }
 
 /**
@@ -30,6 +30,11 @@ export function save(container) {
  */
 export function saveAll() {
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+
+    if (document.activeElement.classList.contains('WYSIWYG__container')) {
+        document.activeElement.dataset.preventBlurEvent = 'true';
+        document.activeElement.blur();
+    }
     
     let promises = [];
     iterateAllStrategies((name, strategy) => {
@@ -71,11 +76,6 @@ export function saveAll() {
     .finally(() => {
         document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
     });
-
-    if (document.activeElement.classList.contains('WYSIWYG__container')) {
-        document.activeElement.dataset.preventBlurEvent = 'true';
-        document.activeElement.blur();
-    }
 }
 
 

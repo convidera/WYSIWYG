@@ -22,31 +22,41 @@ export default function addEventListeners(container) {
 //------------------  P R I V A T E  -------------------\\
 //------------------------------------------------------\\
 
-function enabled() {
-    return window.wysiwyg.insertMode;
+function enabled(e) {
+    if (window.wysiwyg.insertMode) {
+        e.dataTransfer.effectAllowed = 'copy';
+        e.dataTransfer.dropEffect = 'copy';
+        return true;
+    }
+
+    e.dataTransfer.effectAllowed = 'none';
+    e.dataTransfer.dropEffect = 'none';
+    return false;
 }
 
 function onDragenter(e) {
-    if (!enabled()) return true;
+    if (!enabled(e)) return true;
 
     // Tells the browser that we *can* drop on this target
     return stopEvent(e);
 }
 
 function onDragLeave(e) {
-    if (!enabled()) return true;
+    if (!enabled(e)) return true;
 
+    e.dataTransfer.effectAllowed = 'none';
+    e.dataTransfer.dropEffect = 'none';
 }
 
 function onDragover(e) {
-    if (!enabled()) return true;
+    if (!enabled(e)) return true;
 
     // Tells the browser that we *can* drop on this target
     return stopEvent(e);
 }
 
 function onDrop(e) {
-    if (!enabled()) return true;
+    if (!enabled(e)) return true;
 
     const container = this;
     e = e || window.event; // get window.event if e argument missing (in IE)   
