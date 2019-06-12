@@ -41,7 +41,7 @@ class Response
             return $this->data->$name;
         }
 
-        if ($element = $this->__($name)) {
+        if ($element = $this->element($name)) {
             return $element;
         }
 
@@ -71,6 +71,10 @@ class Response
 
     public function __($key)
     {
+        return ($element = $this->element($key)) ? $element->value : null;
+    }
+
+    public function element($key) {
         if ($textElement = $this->textElement($key)) {
             return $textElement;
         }
@@ -83,7 +87,7 @@ class Response
 
     public function textElement($key)
     {
-        return $this->element('text', $key);
+        return $this->getElement('text', $key);
     }
 
     public function text($key)
@@ -93,14 +97,14 @@ class Response
 
     public function mediaElement($key)
     {
-        return $this->element('media', $key);
+        return $this->getElement('media', $key);
     }
 
     public function mediaUrl($key) {
         return ($mediaElement = $this->mediaElement($key)) ? $mediaElement->value : null;
     }
 
-    private function element(string $type, $key)
+    private function getElement(string $type, $key)
     {
         if ($element = $this->getLocalElement($type, $key)) {
             return $element;
