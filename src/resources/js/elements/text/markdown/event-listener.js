@@ -1,5 +1,5 @@
-import notify from '../utils/notification';
-import refresh from './refresh';
+import notify from '../../../utils/notification';
+import getStrategy from '../../strategy';
 
 
 export default function addEventListeners(container) {
@@ -36,27 +36,38 @@ function onblur(e) {
     // e:    FocusEvent
     // this: element container
 
-    if (this.dataset.preventBlurEvent === 'true') {
-        this.dataset.preventBlurEvent = 'false';
+    const container = this;
+    const value = this.innerText;
+
+    if (container.dataset.preventBlurEvent === 'true') {
+        // At least save changes.
+        container.dataset.valueCurrent = value;
+
+        container.dataset.preventBlurEvent = 'false';
         return;
     }
 
     blurInProgess = true;
 
-    const container = this;
-    const value = this.innerText;
-
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
-    refresh(container, value)
-    .then((value) => {
-    })
-    .catch((reason) => {
-        const xmlHttp = reason.xmlHttp;
-        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}\n\nResponse:\n${xmlHttp.responseText}`);
-    })
+    getStrategy('text/markdown').refreshValue(container, value)
+    .catch(handleError)
     .finally(() => {
         document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
         blurInProgess = false;
     });
-    return;
+}
+
+function handleError(reason) {
+    console.error(reason);
+    if (!reason || !reason.error) return Promise.resolve();
+    if (typeof reason.error.obj.status !== 'undefined' && typeof reason.error.obj.status !== 'undefined') {
+        const xmlHttp = reason.error.obj;
+        notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);
+        return Promise.resolve();
+    }
+    if (typeof reason.error.msg !== 'undefined') {
+        notify('error', reason.error.msg);
+        return Promise.resolve();
+    }
 }

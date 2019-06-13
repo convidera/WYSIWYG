@@ -11,12 +11,12 @@ export default function elementContainerKeyListener(e) {
     // save
     if (isCtrlOrMeta && e.code === 'KeyS') {
         if (e.shiftKey) {
-            // CRTL+SHIFT+A or CMD+SHIFT+A  =>  save all
+            // CRTL+SHIFT+S or CMD+SHIFT+S  =>  save all
             // let global listener handle this
             return true;
         }
 
-        // CRTL+A or CMD+A  =>  save this element
+        // CRTL+S or CMD+S  =>  save this element
         save(this);
         return stopEvent(e);
     }

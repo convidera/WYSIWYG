@@ -41,8 +41,8 @@ class Response
             return $this->data->$name;
         }
 
-        if ($textElement = $this->getLocalTextElement($name)) {
-            return $textElement;
+        if ($element = $this->element($name)) {
+            return $element;
         }
 
         return null;
@@ -61,53 +61,85 @@ class Response
     public function __set($name, $value)
     {
         throw_if(isset($this->data->$name), new Exception('Value is already set'));
-        throw_if($this->getLocalTextElement($name), new Exception('TextElement is already set'));
-        throw_if($this->getSubResourceTextElement($name), new Exception('SubResource TextElement is already set'));
+        throw_if($this->getLocalElement('text', $name), new Exception('TextElement is already set'));
+        throw_if($this->getLocalElement('media', $name), new Exception('MediaElement is already set'));
+        throw_if($this->getSubResourceElement('text', $name), new Exception('SubResource TextElement is already set'));
+        throw_if($this->getSubResourceElement('media', $name), new Exception('SubResource MediaElement is already set'));
 
         $this->$name = $value;
     }
 
     public function __($key)
     {
-        if ($textElement = $this->getLocalTextElement($key)) {
+        return ($element = $this->element($key)) ? $element->value : null;
+    }
+
+    public function element($key) {
+        if ($textElement = $this->textElement($key)) {
             return $textElement;
         }
-
-        if ($textElement = $this->getSubResourceTextElement($key)) {
-            return $textElement;
+        if ($mediaElement = $this->mediaElement($key)) {
+            return $mediaElement;
         }
 
         return null;
     }
 
-    public function plain($key)
+    public function textElement($key)
     {
-        return ($textElement = $this->__($key)) ? $textElement->value : null ;
+        return $this->getElement('text', $key);
     }
 
-    private function getLocalTextElement($key)
+    public function text($key)
     {
-        if (!isset($this->data->textElements)) {
+        return ($textElement = $this->textElement($key)) ? $textElement->value : null;
+    }
+
+    public function mediaElement($key)
+    {
+        return $this->getElement('media', $key);
+    }
+
+    public function media($key) {
+        return ($mediaElement = $this->mediaElement($key)) ? $mediaElement->value : null;
+    }
+
+    private function getElement(string $type, $key)
+    {
+        if ($element = $this->getLocalElement($type, $key)) {
+            return $element;
+        }
+        if ($element = $this->getSubResourceElement($type, $key)) {
+            return $element;
+        }
+        return null;
+    }
+
+    private function getLocalElement(string $type, $key)
+    {
+        $type = $type . 'Elements';
+
+        if (!isset($this->data->$type)) {
             return null;
         }
-        foreach ($this->data->textElements as $textElement) {
-            if ($textElement->key == $key) {
-                return $textElement;
+        foreach ($this->data->$type as $element) {
+            if ($element->key == $key) {
+                return $element;
             }
         }
         return null;
     }
 
-    private function getSubResourceTextElement($key)
+    private function getSubResourceElement(string $type, $key)
     {
+        $type = $type . 'Element';
         $splits = explode('.', $key);
         $subResource = $splits[0];
         if (isset($this->data->$subResource) && count($splits) > 1) {
-            if (is_array($this->$subResource)) {
-                return isset($this->$subResource[$splits[1]]) ?
-                    $this->$subResource[$splits[1]]->__(implode('.', array_slice($splits,2))) : null;
+            if (is_array($this->$subResource) && $this->$subResource[$splits[1]]) {
+                return $this->$subResource[$splits[1]]->$type(implode('.', array_slice($splits, 2)));
             }
-            return $this->$subResource->__(implode('.',array_slice($splits,1)));
+            return $this->$subResource->$type(implode('.', array_slice($splits, 1)));
         }
         return null;
     }
@@ -123,7 +155,7 @@ class Response
         die;
     }
 
-    public static function displayTextElementKeys($bool = true)
+    public static function displayTextElementKeys($bool = false)
     {
         self::$displayTextElementKeys = $bool;
     }

@@ -13,9 +13,53 @@ to edit auth is needed
 - 
 
 ## Installation
+If this Project is in a public repository:
 ```bash
 composer require convidera/wysiwyg
 ```
+If this Project is in a private repository:
+
+The `composer.json` either has to reference the git repository
+```json
+   "repositories": [
+        {
+            ...
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:convidera/WYSIWYG.git"
+        }
+    ]
+```
+or the local path
+```json
+   "repositories": [
+        {
+            ...
+        },
+        {
+            "type": "path",
+            "url": "../WYSIWYG.git"
+        }
+    ]
+```
+which might has to be included into the app docker container or installed from outside the box.
+
+For readaccess to the private git repository the native machines ssh key added to the `docker-compose.override.yml` and the `docker-compose.ci.yml`.
+
+```yaml
+volumes:
+      - ~/.ssh:/var/www/.ssh
+```
+or
+```yaml
+volumes:
+     - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa
+     - ~/.ssh/id_rsa.pub:/var/www/.ssh/id_rsa.pub
+     - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts
+```
+
+## Setup
 
 For Laravel < 5.5 you need to add the service provider in your `config/app.php` manually.
 ```php
@@ -98,20 +142,113 @@ class Homepage extends Model implements ProvidesDefaultTextContents
 Blade directive:
 ```php
 /**
- * @param data translation
- * @param tag surrounding tag
- * @param editable force normal text
+ * @param {string} $key      text element key
+ * @param {string} $var      varibale where the key is stored (default: $data)
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'span',
+ *                                  'editable' => true
+ *                              ];
  */
-@text(data, tag = 'span', editable = true)
+@text($key, $var, $options)
+/**
+ * @param {object} $data     text element data
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'span',
+ *                                  'editable' => true
+ *                              ];
+ */
+@textraw($data, $options)
+
+/**
+ * @param {string} $key      text element key
+ * @param {string} $var      varibale where the key is stored (default: $data)
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'span',
+ *                                  'editable' => true
+ *                              ];
+ */
+@markdown($key, $var, $options)
+/**
+ * @param {object} $data     text element data
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'span',
+ *                                  'editable' => true
+ *                              ];
+ */
+@markdownraw($data, $options)
+
+/**
+ * @param {string} $key      image element key
+ * @param {string} $var      varibale where the key is stored (default: $data)
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'img',
+ *                                  'editable' => true,
+ *                                  'asBackgroundImage' => false,
+ *                                  'closeTag' => true
+ *                              ];
+ */
+@image($key, $var, $options)
+/**
+ * @param {object} $data     image element data
+ * @param {array}  $options  custom display options e.g.: [
+ *                                  'tag' => 'img',
+ *                                  'editable' => true,
+ *                                  'asBackgroundImage' => false,
+ *                                  'closeTag' => true
+ *                              ];
+ */
+@imageraw($data, $options)
 ```
+
+Blade call posibilities (without *raw):
+```php
+@text(...)
+@markdown(...)
+@image(...)
+
+// xxxx e.g.: mediaElement, textElement etc. (source Response)
+// ('key')                                   ->  "$data->xxxx('key')"
+// ('key', \$var)                            ->  "$var->xxxx('key')"
+// ('key', [ 'options' => true ])            ->  "$data->xxxx('key', [ "options" => true ])"
+// ('key', \$var, [ 'options' => true ])     ->  "$var->xxxx('key', [ "options" => true ])"
+// ("key")                                   ->  "$data->xxxx('key')"
+// ("key", $var)                             ->  "$var->xxxx('key')"
+// ("key", [ "options" => true ])            ->  "$data->xxxx('key', [ "options" => true ])"
+// ("key", $vra, [ "options" => true ])      ->  "$var->xxxx('key', [ "options" => true ])"
+
+// examples
+@text('headline')
+@markdown('content', $page)
+@image('backgound', [
+    'tag' => 'header',
+    'asBackgroundImage' => true
+])
+@image('backgound', $page, [
+    'tag' => 'div',
+    'asBackgroundImage' => true,
+    'closeTag' => false
+]) @endimage
+```
+
+Blade call posibilities (with *raw):
+```php
+@textraw(...)
+@markdownraw(...)
+@imageraw(...)
+
+// examples:
+@text($data->__('headline'))
+@text($data->__('headline'), [ /* options */ ])
+````
+
 
 Normal usage:
 ```html
-@text($data->headline)
-@text($data->text)
+@text('headline')
+@text('text')
 ```
 
 For attributes and other usecases where only the data is needed and which is not able to be surrouded with a tag or editable:
 ```html
-<input type="text" class="Form-input" v-model="email" placeholder="@text($data->__('notification.email'), null, false)">
+<input type="text" class="Form-input" v-model="email" placeholder="$data->text('notification.email')">
 ```

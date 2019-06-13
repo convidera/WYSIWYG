@@ -52,55 +52,125 @@ class WYSIWYGServiceProvider extends ServiceProvider
 
     private function directives() {
         /**
-         * @param data translation
-         * @param tag surrounding tag
-         * @param editable force normal text
+         * @param {object} $data     text element data
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'span',
+         *                                  'editable' => true
+         *                              ];
+         */
+        Blade::directive('textraw', function($expression) {
+            return $this->textElementCode($expression);
+        });
+        /**
+         * @param {string} $key      text element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'span',
+         *                                  'editable' => true
+         *                              ];
          */
         Blade::directive('text', function($expression) {
-            $data = $this->parseExpression($expression);
-            $dataStr = $this->expressionDataToString($data);
-            return "<?php echo view('wysiwyg::text-element', $dataStr); ?>";
+            $preparedExpression = $this->replaceKeyWithElement($expression, 'textElement');
+            return $this->textElementCode($preparedExpression);
         });
 
         /**
-         * @param data translation
-         * @param tag surrounding tag
-         * @param editable force normal text
+         * @param {object} $data     text element data
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'span',
+         *                                  'editable' => true
+         *                              ];
+         */
+        Blade::directive('markdownraw', function($expression) {
+            return $this->markdownElementCode($expression);
+        });
+        /**
+         * @param {string} $key      text element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'span',
+         *                                  'editable' => true
+         *                              ];
          */
         Blade::directive('markdown', function($expression) {
-            $data = $this->parseExpression($expression);
-            if ( array_key_exists('data', $data) && $data['data']) {
-                $dataStr = $this->expressionDataToString($data);
-                return "<?php echo view('wysiwyg::markdown-element', $dataStr); ?>";
-            }
-            return "<?php ob_start(); ?>";
+            $preparedExpression = $this->replaceKeyWithElement($expression, 'textElement');
+            return $this->markdownElementCode($preparedExpression);
         });
-        Blade::directive('endmarkdown', function() {
-            return "<?php echo Illuminate\Mail\Markdown::parse(ob_get_clean()); ?>";
+
+        /**
+         * @param {object} $data     image element data
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'img',
+         *                                  'editable' => true,
+         *                                  'asBackgroundImage' => false,
+         *                                  'closeTag' => true
+         *                              ];
+         */
+        Blade::directive('imageraw', function($expression) {
+            return $this->imageElementCode($expression);
+        });
+        Blade::directive('endimageraw', function() {
+            return '<?php echo "</" . array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack) . ">" ?>';;
+        });
+        /**
+         * @param {string} $key      image element key
+         * @param {string} $var      varibale where the key is stored (default: $data)
+         * @param {array}  $options  custom display options e.g.: [
+         *                                  'tag' => 'img',
+         *                                  'editable' => true,
+         *                                  'asBackgroundImage' => false,
+         *                                  'closeTag' => true
+         *                              ];
+         */
+        Blade::directive('image', function($expression) {
+            $preparedExpression = $this->replaceKeyWithElement($expression, 'mediaElement');
+            return $this->imageElementCode($preparedExpression);
+        });
+        Blade::directive('endimage', function() {
+            return '<?php echo "</" . array_pop(\Convidera\WYSIWYG\Helpers\DirectivesHelper::$tagStack) . ">" ?>';
         });
     }
 
-    private function parseExpression($expression) {
-        if ( ! $expression) return [];
-        $parameters = array_map(function($parameter) {
-            return trim($parameter);
-        } , explode(',', $expression));
-        if (count($parameters) < 1) return [];
+    private function replaceKeyWithElement($expression, $fnName) {
+        // xxxx e.g.: mediaElement, textElement etc. (source Response)
+        // "'key'"                                   ->  "$data->xxxx('key')"
+        // "'key', \$var"                            ->  "$var->xxxx('key')"
+        // "'key', [ 'options' => true ]"            ->  "$data->xxxx('key', [ "options" => true ])"
+        // "'key', \$var, [ 'options' => true ]"     ->  "$var->xxxx('key', [ "options" => true ])"
+        // '"key"'                                   ->  "$data->xxxx('key')"
+        // '"key", $var'                             ->  "$var->xxxx('key')"
+        // '"key", [ "options" => true ]'            ->  "$data->xxxx('key', [ "options" => true ])"
+        // '"key", $var, [ "options" => true ]'      ->  "$var->xxxx('key', [ "options" => true ])"
 
-        $data = $parameters[0];
-        $data = (strtoupper($data) == 'NULL') ? '' : $data;
-        $tag = (isset($parameters[1])) ? $parameters[1] : 'span';
-        $tag = (strtoupper($tag) == 'NULL') ? '' : $tag;
-        $editable = isset($parameters[2]) ? $parameters[2] : 'true';
-        $editable = (strtoupper($editable) == 'FALSE') ? 'false' : true;
+        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+))?\s*((?<options>,\s*.*)\s*)?$/s';
+        $matches = [];
+        preg_match($pattern, $expression, $matches, PREG_OFFSET_CAPTURE, 0);
 
-        return [ 'data' => $data, 'tag' => "$tag", 'editable' => $editable ];
+        $key = array_key_exists('key1', $matches) && !empty($matches['key1'][0]) ? $matches['key1'][0] : $matches['key2'][0];
+        $var = array_key_exists('var', $matches) && !empty($matches['var'][0]) ? $matches['var'][0] : '$data';
+        $options = array_key_exists('options', $matches) && !empty($matches['options'][0]) ? $matches['options'][0] : '';
+
+        return "${var}->${fnName}('${key}')${options}";
     }
 
-    private function expressionDataToString($dataArr) {
-        $data = $dataArr['data'];
-        $tag = $dataArr['tag'];
-        $editable = $dataArr['editable'];
-        return "[ 'data' => $data, 'tag' => '$tag', 'editable' => $editable ]";
+    private function textElementCode($expression) {
+        return '<?php
+            $args = \Convidera\WYSIWYG\Helpers\DirectivesHelper::parseTextDirectiveArguments(' . $expression . ');
+            echo view("wysiwyg::text-element", $args);
+        ?>';
+    }
+
+    private function markdownElementCode($expression) {
+        return '<?php
+            $args = \Convidera\WYSIWYG\Helpers\DirectivesHelper::parseMarkdownDirectiveArguments(' . $expression . ');
+            echo view("wysiwyg::markdown-element", $args);
+        ?>';
+    }
+
+    private function imageElementCode($expression) {
+        return '<?php
+            $args = \Convidera\WYSIWYG\Helpers\DirectivesHelper::parseImageDirectiveArguments(' . $expression . ');
+            echo view("wysiwyg::image-element", $args);
+        ?>';
     }
 }

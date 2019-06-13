@@ -5,7 +5,7 @@ namespace Convidera\WYSIWYG\Traits;
 use Convidera\WYSIWYG\TextElement;
 use Illuminate\Database\Eloquent\Model;
 
-trait HasDefaultTextContents
+trait HasDefaultTextElements
 {
     public static function createDefaultTextKeys(Model $model)
     {
@@ -21,10 +21,8 @@ trait HasDefaultTextContents
         return self::$defaultTextKeys;
     }
 
-    protected static function boot()
+    protected static function bootHasDefaultTextElements()
     {
-        parent::boot();
-
         self::created(get_called_class() . '@createDefaultTextKeys');
     }
 

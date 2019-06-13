@@ -1,6 +1,9 @@
 import stopEvent from '../utils/event-broker';
 import { saveAll } from '../utils/save';
-import { iterateAllElementContainers } from '../utils/element-container-helper';
+import {
+    iterateAllElementContainers,
+    iterateAllTextElementContainers
+} from '../utils/element-container-helper';
 
 const DELTA = 500;
 let lastKeypressTime = 0;
@@ -19,10 +22,19 @@ export default function globalKeyListener(e) {
     // check if is CMD (on mac) or CTRL (other) pressed
     const isCtrlOrMeta = window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey;
 
-    // save all
-    if (isCtrlOrMeta && e.shiftKey && e.code === 'KeyS') {
-        // CRTL+SHIFT+A or CMD+SHIFT+A  =>  save all
-        saveAll();
+    // save
+    if (isCtrlOrMeta && e.code === 'KeyS') {
+        if (e.shiftKey) {
+            // save all
+            // CRTL+SHIFT+S or CMD+SHIFT+S  =>  save all
+            saveAll();
+            return stopEvent(e);
+        }
+
+        // CRTL+S or CMD+S  =>  ask user to save all
+        if (confirm('No element selected. Do you want to save all elements?')) {
+            saveAll();
+        }
         return stopEvent(e);
     }
 
@@ -46,7 +58,7 @@ export default function globalKeyListener(e) {
         return stopEvent(e);
     }
 
-    // toggle insert mode
+    // toggle placeholder mode
     if (isCtrlOrMeta && e.code === 'KeyP') {
         // CRTL+E or CMD+E  =>  toggle insert mode
         togglePlaceholder();
@@ -64,6 +76,7 @@ export default function globalKeyListener(e) {
     if (e.code === 'Escape') {
         // ESC  =>  disable insert mode -> normal mode
         insertMode(false);
+        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
         return stopEvent(e);
     }
 }
@@ -95,7 +108,9 @@ const insertMode = (function() {
             enableInsertModeFirstTime = true;
             prevendAllInteractions();
         }
-        iterateAllElementContainers((container) => {
+        window.wysiwyg.insertMode = insert;
+        
+        iterateAllTextElementContainers((container) => {
             container.contentEditable = (insert === null) ? (container.contentEditable !== 'true') : insert;
         });
     };
@@ -110,8 +125,12 @@ function togglePlaceholder() {
 function startBorderAnimation() {
     iterateAllElementContainers((container) => {
         container.classList.add("WYSIWYG__container-border");
+        if (getComputedStyle(container, null).display === 'inline') {
+            container.classList.add("WYSIWYG__container-border-no-inline");
+        }
         setTimeout(function() {
             this.classList.remove("WYSIWYG__container-border");
+            this.classList.remove("WYSIWYG__container-border-no-inline");
         }.bind(container), 2000);
     });
 }
