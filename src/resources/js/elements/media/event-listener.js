@@ -13,7 +13,9 @@ export default function addEventListeners(container) {
         container.addEventListener('drop',      onDrop,      false);
     }
     else {
-        console.log('Your browser does not support the HTML5 FileReader. Drag&Drop features are not supported.');
+        const msg = 'Your browser does not support the HTML5 FileReader. Drag&Drop features are not supported.';
+        console.log(msg);
+        notify('warning', msg);
     }
 }
 

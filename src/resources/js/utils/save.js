@@ -1,4 +1,3 @@
-import { iterateAllElementContainers } from './element-container-helper';
 import notify from './notification';
 import getStrategy, { iterateAllStrategies } from '../elements/strategy';
 
@@ -16,8 +15,23 @@ export function save(container) {
     const strategy = getStrategy(container.dataset.mimeType);
     strategy.save(container)
     .then((xmlHttp) => {
+        if ( ! xmlHttp) {
+            // no db update
+            const value = container.dataset.valueCurrent;
+            if (value) {
+                return getStrategy(container.dataset.mimeType)
+                    .refreshValue(container, value);
+            }
+            return Promise.resolve();
+        }
+
         const data = JSON.parse(xmlHttp.responseText);
         return strategy.refresh(container, data);
+    })
+    .then(() => {
+        // notify user
+        notify('success', 'Changes saved successfully.');
+        return Promise.resolve();
     })
     .catch(handleError)
     .finally(() => {
@@ -31,16 +45,26 @@ export function save(container) {
 export function saveAll() {
     document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
 
+    let activeElement = null;
     if (document.activeElement.classList.contains('WYSIWYG__container')) {
-        document.activeElement.dataset.preventBlurEvent = 'true';
-        document.activeElement.blur();
+        activeElement = document.activeElement;
+        activeElement.dataset.preventBlurEvent = 'true';
+        activeElement.blur();
     }
     
     let promises = [];
     iterateAllStrategies((name, strategy) => {
         promises.push(strategy.saveAll().then((xmlHttp) => {
             if ( ! xmlHttp) {
-                return Promise.resolve(); // no updates
+                // no db update
+                if (activeElement) {
+                    const value = activeElement.dataset.valueCurrent;
+                    if (value) {
+                        return getStrategy(activeElement.dataset.mimeType)
+                            .refreshValue(activeElement, value);
+                    }
+                }
+                return Promise.resolve();
             }
 
             let dataset = JSON.parse(xmlHttp.responseText);
@@ -85,7 +109,11 @@ export function saveAll() {
 
 function handleError(reason) {
     console.error(reason);
-    if (!reason || !reason.error) return Promise.resolve();
+    if (!reason || !reason.error) {
+        // unknown error (ugly display)
+        notify('error', reason);
+        return Promise.resolve();
+    }
     if (typeof reason.error.obj.status !== 'undefined' && typeof reason.error.obj.status !== 'undefined') {
         const xmlHttp = reason.error.obj;
         notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);

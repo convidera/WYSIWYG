@@ -60,7 +60,11 @@ function onblur(e) {
 
 function handleError(reason) {
     console.error(reason);
-    if (!reason || !reason.error) return Promise.resolve();
+    if (!reason || !reason.error) {
+        // unknown error (ugly display)
+        notify('error', reason);
+        return Promise.resolve();
+    }
     if (typeof reason.error.obj.status !== 'undefined' && typeof reason.error.obj.status !== 'undefined') {
         const xmlHttp = reason.error.obj;
         notify('error', `Oh no. Request failed. Status: ${xmlHttp.status}<br/><br/>Response:<br/>${xmlHttp.responseText}`);
