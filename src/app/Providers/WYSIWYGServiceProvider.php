@@ -142,13 +142,13 @@ class WYSIWYGServiceProvider extends ServiceProvider
         // '"key", [ "options" => true ]'            ->  "$data->xxxx('key', [ "options" => true ])"
         // '"key", $var, [ "options" => true ]'      ->  "$var->xxxx('key', [ "options" => true ])"
 
-        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+))?\s*((?<options>,\s*.*)\s*)?$/s';
+        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+){0,1})?\s*((?<options>,\s*.*)\s*)?$/s';
         $matches = [];
         preg_match($pattern, $expression, $matches, PREG_OFFSET_CAPTURE, 0);
 
-        $key = array_key_exists('key1', $matches) && !empty($matches['key1'][0]) ? $matches['key1'][0] : $matches['key2'][0];
-        $var = array_key_exists('var', $matches) && !empty($matches['var'][0]) ? $matches['var'][0] : '$data';
-        $options = array_key_exists('options', $matches) && !empty($matches['options'][0]) ? $matches['options'][0] : '';
+        $key = (array_key_exists('key1', $matches) && !empty($matches['key1'][0])) ? $matches['key1'][0] : $matches['key2'][0];
+        $var = (array_key_exists('var', $matches) && !empty($matches['var'][0]) && $matches['var'][0] != 'null') ? $matches['var'][0] : '$data';
+        $options = (array_key_exists('options', $matches) && !empty($matches['options'][0]) && $matches['var'][0] != 'null') ? $matches['options'][0] : '';
 
         return "${var}->${fnName}('${key}')${options}";
     }
