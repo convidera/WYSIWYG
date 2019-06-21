@@ -20,11 +20,13 @@ class ComputedTextElementPanel extends \Laravel\Nova\Panel
      */
     public static function make($name, $fields = [], $wordCount = 7, $displayOnIndex = [])
     {
-        if (is_array($fields) || is_callable($fields)) {
-            return new self($name, $fields);
+        if (is_callable($fields)) {
+            $fields = $fields();
+        }
+        if (is_object($fields)) {
+            $fields = get_class($fields)::getDefaultTextKeys();
         }
 
-        $fields = get_class($fields)::getDefaultTextKeys();
         $computedTextElementFields = [];
         foreach ($fields as $field) {
             $computedTextElement = ComputedTextElement::make($field)->setLength($wordCount);

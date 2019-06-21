@@ -27,6 +27,10 @@ abstract class TextElement extends Resource
      */
     public static $displayInNavigation = false;
 
+    public static $indexDefaultOrder = [
+        'key' => 'asc'
+    ];
+
     /**
      * The model the resource corresponds to.
      *
