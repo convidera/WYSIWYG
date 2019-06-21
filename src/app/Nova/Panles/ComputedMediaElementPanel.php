@@ -36,8 +36,8 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
                 $computedMediaElement->path($path);
             }
             if ($usesClientOriginalName) {
-                $computedMediaElement->storeAs(function ($request) {
-                    return $request->media->getClientOriginalName();
+                $computedMediaElement->storeAs(function ($request) use ($field){
+                    return $request->$field->getClientOriginalName();
                 });
             }
             $computedMediaElementFields[] = $computedMediaElement;
