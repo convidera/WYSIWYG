@@ -27,6 +27,6 @@ trait HasDefaultMediaElements
     }
 
     public function mediaElements() {
-        return $this->morphMany(MediaElement::class, 'media_elementable');
+        return $this->morphMany(MediaElement::class, 'media_elementable')->orderBy('key');
     }
 }

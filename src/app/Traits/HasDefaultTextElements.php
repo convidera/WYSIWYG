@@ -27,6 +27,6 @@ trait HasDefaultTextElements
     }
 
     public function textElements() {
-        return $this->morphMany(TextElement::class, 'text_elementable');
+        return $this->morphMany(TextElement::class, 'text_elementable')->orderBy('key');
     }
 }
