@@ -2,7 +2,7 @@
 
 namespace Convidera\WYSIWYG\Http\Resources;
 
-class Response
+class Response implements \JsonSerializable
 {
     protected $data;
     protected $originalData;
@@ -163,5 +163,10 @@ class Response
     public function __toString()
     {
         return json_encode($this->originalData);
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->originalData;
     }
 }
