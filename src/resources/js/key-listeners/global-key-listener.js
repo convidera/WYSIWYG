@@ -60,7 +60,7 @@ export default function globalKeyListener(e) {
 
     // toggle placeholder mode
     if (isCtrlOrMeta && e.code === 'KeyP') {
-        // CRTL+E or CMD+E  =>  toggle insert mode
+        // CRTL+E or CMD+E  =>  toggle placeholder mode
         togglePlaceholder();
         return stopEvent(e);
     }

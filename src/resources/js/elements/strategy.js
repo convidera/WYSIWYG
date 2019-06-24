@@ -17,7 +17,7 @@
 //      * 
 //      * @return {Promise}
 //      */
-//     save();
+//     save(data);
 //
 //     /**
 //      * Save all elements from document.
