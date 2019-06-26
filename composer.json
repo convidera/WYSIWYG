@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-		"issues": "https://github.com/heinrichconvidera/wysiwyg/issues",
-		"source": "https://github.com/heinrichconvidera/wysiwyg"
+		"issues": "https://github.com/convidera/WYSIWYG/issues",
+		"source": "https://github.com/convidera/WYSIWYG"
 	},
     "minimum-stability": "dev",
     "prefer-stable": true,

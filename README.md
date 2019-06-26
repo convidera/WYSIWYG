@@ -12,7 +12,7 @@ If installed and implemented WYSIWYG in your project you only have to log in. Th
 | I | enable edit -> insert mode (unless if already in insert mode) |
 | CRTL+E or CMD+E | toggle insert mode |
 | ESC | disable insert mode -> normal mode |
-| CRTL+E or CMD+E | toggle placeholder mode |
+| CRTL+P or CMD+P | toggle placeholder visiblity mode |
 | CRTL+S or CMD+S | save element in focus; otherwise ask user to save all |
 | CRTL+SHIFT+S or CMD+SHIFT+S | save all |
 | 2x SHIFT | display borders around all WYSIWYG elements for a few seconds |
