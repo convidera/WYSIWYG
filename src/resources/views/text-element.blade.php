@@ -1,7 +1,7 @@
-@if(!Auth::user() || !$options->changeable)
+@if(!Auth::user() || !$options->changeable || empty($data))
 
     {!! empty($options->tag) ? '' : "<$options->tag>" !!}
-        {{ $data ? $data->value : '' }}
+        {{ empty($data) ? '' : $data->value }}
     {!! empty($options->tag) ? '' : "</$options->tag>" !!}
 
 @else

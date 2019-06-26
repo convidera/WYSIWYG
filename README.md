@@ -4,44 +4,57 @@ A basic and simple _**W**hat **Y**ou **S**ee **I**s **W**hat **Y**ou **G**et_ ed
 
 <!-- ToDo: https://poser.pugx.org/ -->
 
-description ....  
-to edit auth is needed
+## What does you get
+If installed and implemented WYSIWYG in your project you only have to log in. Then the following commands will be avalible:
+
+| cmd | description |
+|--|--|
+| I | enable edit -> insert mode (unless if already in insert mode) |
+| CRTL+E or CMD+E | toggle insert mode |
+| ESC | disable insert mode -> normal mode |
+| CRTL+P or CMD+P | toggle placeholder visiblity mode |
+| CRTL+S or CMD+S | save element in focus; otherwise ask user to save all |
+| CRTL+SHIFT+S or CMD+SHIFT+S | save all |
+| 2x SHIFT | display borders around all WYSIWYG elements for a few seconds |
+
+**Note**: CRTL will be the CMD/META key for mac user.
+
 
 ## Requirements
-- PHP >= 
-- Laravel >= 
-- 
+- PHP >= 7.3
+- Laravel >= 5.5
+
 
 ## Installation
-If this Project is in a public repository:
+If this project is in a public repository:
 ```bash
 composer require convidera/wysiwyg
 ```
-If this Project is in a private repository:
 
+If this project is in a private repository:  
 The `composer.json` either has to reference the git repository
 ```json
-   "repositories": [
-        {
-            ...
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:convidera/WYSIWYG.git"
-        }
-    ]
+"repositories": [
+    {
+        ...
+    },
+    {
+        "type": "git",
+        "url": "git@github.com:convidera/WYSIWYG.git"
+    }
+]
 ```
 or the local path
 ```json
-   "repositories": [
-        {
-            ...
-        },
-        {
-            "type": "path",
-            "url": "../WYSIWYG.git"
-        }
-    ]
+"repositories": [
+    {
+        ...
+    },
+    {
+        "type": "path",
+        "url": "../WYSIWYG.git"
+    }
+]
 ```
 which might has to be included into the app docker container or installed from outside the box.
 
@@ -49,15 +62,16 @@ For readaccess to the private git repository the native machines ssh key added t
 
 ```yaml
 volumes:
-      - ~/.ssh:/var/www/.ssh
+  - ~/.ssh:/var/www/.ssh:ro
 ```
 or
 ```yaml
 volumes:
-     - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa
-     - ~/.ssh/id_rsa.pub:/var/www/.ssh/id_rsa.pub
-     - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts
+  - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa:ro
+  - ~/.ssh/id_rsa.pub:/var/www/.ssh/id_rsa.pub:ro
+  - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts
 ```
+
 
 ## Setup
 
@@ -72,6 +86,7 @@ For Laravel < 5.5 you need to add the service provider in your `config/app.php` 
 
 ### Nova
 
+#### Text Elements
 If you also want to use nova. Create you own class `App\Nova\TextElement.php` which extends from `Convidera\WYSIWYG\Nova\TextElement` and add all class which use TextElements.
 
 Example:
@@ -95,10 +110,33 @@ class TextElement extends WYSIWYGTextElement
 }
 ```
 
+#### Media Elements
+The same goes for Media elements:  
+class `App\Nova\MediaElement.php` which extends from `Convidera\WYSIWYG\Nova\MediaElement`
+
+Example:
+```php
+<?php
+
+namespace App\Nova;
+
+use Convidera\WYSIWYG\Nova\MediaElement as WYSIWYGMediaElement;
+
+class MediaElement extends WYSIWYGMediaElement
+{
+    public function getMediaElementableTypes() {
+        return [
+            Homepage::class,
+            ContentBlock::class,
+        ];
+    }
+}
+```
+
+
 ## Usage
 
 ### Model
-
 ```php
 <?php
 
@@ -106,11 +144,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Convidera\WYSIWYG\Traits\HasDefaultTextContents;
+use Convidera\WYSIWYG\Traits\ProvidesDefaultMediaElements;
 use Convidera\WYSIWYG\Traits\ProvidesDefaultTextContents;
 
-class Homepage extends Model implements ProvidesDefaultTextContents
+class Homepage extends Model implements ProvidesDefaultTextElements, ProvidesDefaultMediaElements
 {
-    use HasDefaultTextContents;
+    use HasDefaultTextElements, HasDefaultMediaElements;
 
     /**
      * The default text element keys that will be created after model creation.
@@ -123,6 +162,16 @@ class Homepage extends Model implements ProvidesDefaultTextContents
         // ...
     ];
 
+    /**
+     * The default media element keys that will be created after model creation.
+     *
+     * @var array
+     */
+    static protected $defaultMediaKeys = [
+        'media',
+        // ...
+    ];
+
     // ...
 }
 ```
@@ -131,14 +180,16 @@ class Homepage extends Model implements ProvidesDefaultTextContents
 
 #### Data
 ```html
+<!-- element data object -->
 {{ $data->headline }}
+
+<!-- element data value -->
 {{ $data->__('headline') }}
-{{ $data->__('subModel.headline') }}
+{{ $data->__('subModel.headline') }}    <!-- sub-model -->
 {{ $data->__('subModels.0.headline') }} <!-- array -->
 ```
 
 #### Enable WYSIWYG feature
-
 Blade directive:
 ```php
 /**
@@ -208,13 +259,13 @@ Blade call posibilities (without *raw):
 
 // xxxx e.g.: mediaElement, textElement etc. (source Response)
 // ('key')                                   ->  "$data->xxxx('key')"
-// ('key', \$var)                            ->  "$var->xxxx('key')"
+// ('key', $var)                             ->  "$var->xxxx('key')"
 // ('key', [ 'options' => true ])            ->  "$data->xxxx('key', [ "options" => true ])"
-// ('key', \$var, [ 'options' => true ])     ->  "$var->xxxx('key', [ "options" => true ])"
+// ('key', $var, [ 'options' => true ])      ->  "$var->xxxx('key', [ "options" => true ])"
 // ("key")                                   ->  "$data->xxxx('key')"
 // ("key", $var)                             ->  "$var->xxxx('key')"
 // ("key", [ "options" => true ])            ->  "$data->xxxx('key', [ "options" => true ])"
-// ("key", $vra, [ "options" => true ])      ->  "$var->xxxx('key', [ "options" => true ])"
+// ("key", $var, [ "options" => true ])      ->  "$var->xxxx('key', [ "options" => true ])"
 
 // examples
 @text('headline')
@@ -237,18 +288,29 @@ Blade call posibilities (with *raw):
 @imageraw(...)
 
 // examples:
-@text($data->__('headline'))
-@text($data->__('headline'), [ /* options */ ])
-````
+@textraw($data->headline)
+@textraw($data->textElement('headline'), [ /* options */ ])
+```
 
-
-Normal usage:
+Normal/Default usages:
 ```html
 @text('headline')
 @text('text')
+@markdown('content')
+@image('media')
+
+<!-- extended foreach example -->
+@foreach($data->productCategories as $key => $productCategory)
+    <div class="Categories__slide">
+        @image('media', $productCategory, [ 'additionalClasses' => 'slick-slide__img' ])
+        <div class="slick-name">
+            @text('name', $productCategory)
+        </div>
+    </div>
+@endforeach
 ```
 
 For attributes and other usecases where only the data is needed and which is not able to be surrouded with a tag or editable:
 ```html
-<input type="text" class="Form-input" v-model="email" placeholder="$data->text('notification.email')">
+<input type="text" class="Form-input" v-model="email" placeholder="{{ $data->__('notification.email') }}">
 ```
