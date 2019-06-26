@@ -132,17 +132,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
     }
 
     private function replaceKeyWithElement($expression, $fnName) {
-        // xxxx e.g.: mediaElement, textElement etc. (source Response)
-        // "'key'"                                   ->  "$data->xxxx('key')"
-        // "'key', \$var"                            ->  "$var->xxxx('key')"
-        // "'key', [ 'options' => true ]"            ->  "$data->xxxx('key', [ "options" => true ])"
-        // "'key', \$var, [ 'options' => true ]"     ->  "$var->xxxx('key', [ "options" => true ])"
-        // '"key"'                                   ->  "$data->xxxx('key')"
-        // '"key", $var'                             ->  "$var->xxxx('key')"
-        // '"key", [ "options" => true ]'            ->  "$data->xxxx('key', [ "options" => true ])"
-        // '"key", $var, [ "options" => true ]'      ->  "$var->xxxx('key', [ "options" => true ])"
-
-        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$\w+){0,1})?\s*((?<options>,\s*.*)\s*)?$/s';
+        $pattern = '/^\s*(\'(?<key1>.*?)\'|"(?<key2>.*?)")\s*(,\s*(?<var>\$.+?){0,1})?\s*((?<options>,\s*.*)\s*)?$/s';
         $matches = [];
         preg_match($pattern, $expression, $matches, PREG_OFFSET_CAPTURE, 0);
 
