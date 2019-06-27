@@ -7,7 +7,7 @@ import getStrategy, { iterateAllStrategies } from '../elements/strategy';
  * @param {object} container html element of element container
  */
 export function save(container) {
-    document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+    document.body.setAttribute('cursor-wait', true);
 
     container.dataset.preventBlurEvent = 'true';
     container.blur();
@@ -35,7 +35,7 @@ export function save(container) {
     })
     .catch(handleError)
     .finally(() => {
-        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+        document.body.removeAttribute('cursor-wait');
     });
 }
 
@@ -43,7 +43,7 @@ export function save(container) {
  * Save all element container.
  */
 export function saveAll() {
-    document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+    document.body.setAttribute('cursor-wait', true);
 
     let activeElement = null;
     if (document.activeElement.classList.contains('WYSIWYG__container')) {
@@ -98,7 +98,7 @@ export function saveAll() {
     })
     .catch(handleError)
     .finally(() => {
-        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+        document.body.removeAttribute('cursor-wait');
     });
 }
 

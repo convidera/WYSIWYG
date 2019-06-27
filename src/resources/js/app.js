@@ -12,6 +12,7 @@ import stopEvent from './utils/event-broker';
 window.addEventListener("load", function() {
     // initialize storage
     window.wysiwyg = window.wysiwyg || {};
+    window.wysiwyg.insertMode = false;
     window.wysiwyg.storage = window.wysiwyg.storage || {};
     window.wysiwyg.storage.media = [];
 
@@ -39,8 +40,9 @@ window.addEventListener("load", function() {
         e.dataTransfer.dropEffect = 'none';
         return stopEvent(e);
     };
-    document.getElementsByTagName("BODY")[0].addEventListener('dragover', preventDropEvent, false);
-    document.getElementsByTagName("BODY")[0].addEventListener('drop',     preventDropEvent, false);
+    document.body = document.body || document.getElementsByTagName("BODY")[0];
+    document.body.addEventListener('dragover', preventDropEvent, false);
+    document.body.addEventListener('drop',     preventDropEvent, false);
 
     // prototypes
     // only implement if no native implementation is available
