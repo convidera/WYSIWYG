@@ -33,7 +33,6 @@ class WYSIWYGController extends Controller
     }
 
     public function updateMedia(/*UpdateMedia*/Request $request, $mediaElement) {
-        dd('hi');
         $mediaElement = MediaElement::findOrFail($mediaElement);
         $mediaElement->value = $request->file('file');
         $mediaElement->save();

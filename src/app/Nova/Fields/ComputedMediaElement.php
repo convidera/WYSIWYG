@@ -18,8 +18,16 @@ class ComputedMediaElement extends Image
 
     public function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        if (is_null($file = $request->file($requestAttribute)) || ! $file->isValid()) {
-            return;
+        $key = $this->getEscapedKey($requestAttribute);
+        if (is_null($file = $request->file($key)) || ! $file->isValid()) {
+            return $model->mediaElements()->updateOrCreate([
+                'media_elementable_id' => $model->id,
+                'key' => $attribute,
+            ], [
+                'media_elementable_id' => $model->id,
+                'key' => $attribute,
+                'value' => null
+            ]);
         }
 
         $model->id = $model->id ?? Uuid::uuid4()->toString();
@@ -36,10 +44,10 @@ class ComputedMediaElement extends Image
     protected function storeFile($request)
     {
         if (! $this->storeAsCallback) {
-            return $request->file($this->attribute)->store($this->storagePath, $this->disk);
+            return $request->file($this->getEscapedKey($this->attribute))->store($this->storagePath, $this->disk);
         }
 
-        return $request->file($this->attribute)->storeAs(
+        return $request->file($this->getEscapedKey($this->attribute))->storeAs(
             $this->storagePath, call_user_func($this->storeAsCallback, $request), $this->disk
         );
     }
@@ -57,5 +65,9 @@ class ComputedMediaElement extends Image
         }
 
         return $attributes;
+    }
+
+    private function getEscapedKey(string $key) {
+        return str_replace('.', '_', $key);
     }
 }
