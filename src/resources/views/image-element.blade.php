@@ -5,7 +5,7 @@
             class="{{ $options->additionalClasses }}"
         @endif
         @if(!empty($options->additionalAttributes))
-            {{ $options->additionalAttributes }}
+            {!! $options->additionalAttributes  !!}
         @endif
 
         @if(!empty($data))
