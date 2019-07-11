@@ -1,4 +1,4 @@
-@if(!Auth::user() || !$options->changeable)
+@if(!Auth::user() || !$options->changeable || empty($data))
 
     <{{ $options->tag }}
         @if(!empty($options->additionalClasses))
@@ -8,19 +8,21 @@
             {{ $options->additionalAttributes }}
         @endif
 
-        @if(!empty($data->value))
-            @if($options->asBackgroundImage)
-                style="background-image: url({{ $data->value }});"
-            @else
-                src="{{ $data->value }}"
+        @if(!empty($data))
+            @if(!empty($data->value))
+                @if($options->asBackgroundImage)
+                    style="background-image: url({{ $data->value }});"
+                @else
+                    src="{{ $data->value }}"
+                @endif
             @endif
-        @endif
 
-        @foreach($data->textElements as $textElement)
-            @if(!empty($textElement->value))
-                {{ $textElement->key }}="{{ str_replace('"', '\"', $textElement->value) }}"
-            @endif
-        @endforeach
+            @foreach($data->textElements as $textElement)
+                @if(!empty($textElement->value))
+                    {{ $textElement->key }}="{{ str_replace('"', '\"', $textElement->value) }}"
+                @endif
+            @endforeach
+        @endif
     >
 
     @if($options->closeTag)
