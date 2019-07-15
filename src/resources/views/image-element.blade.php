@@ -5,7 +5,7 @@
             class="{{ $options->additionalClasses }}"
         @endif
         @if(!empty($options->additionalAttributes))
-            {{ $options->additionalAttributes }}
+            {!! $options->additionalAttributes !!}
         @endif
 
         @if(!empty($data))
@@ -43,7 +43,7 @@
         data-placeholder="{{ env('DISPLAY_TEXT_ELEMENT_KEYS', false) ? '>>' . $data->key . '<<' : '' }}"
 
         @if(!empty($options->additionalAttributes))
-            {{ $options->additionalAttributes }}
+            {!! $options->additionalAttributes !!}
         @endif
 
         @if(!empty($data->value))
