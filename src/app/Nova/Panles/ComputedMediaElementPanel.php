@@ -21,11 +21,13 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
      */
     public static function make($name, $fields = [], $displayOnIndex = [], string $path = null, bool $usesClientOriginalName = false)
     {
-        if (is_array($fields) || is_callable($fields)) {
-            return new self($name, $fields);
+        if (is_callable($fields)) {
+            $fields = $fields();
         }
-
-        $fields = get_class($fields)::getDefaultMediaKeys();
+        if (is_object($fields)) {
+            $fields = get_class($fields)::getDefaultMediaKeys();
+        }
+        
         $computedMediaElementFields = [];
         foreach ($fields as $field) {
             $computedMediaElement = ComputedMediaElement::make($field);
@@ -36,8 +38,8 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
                 $computedMediaElement->path($path);
             }
             if ($usesClientOriginalName) {
-                $computedMediaElement->storeAs(function ($request) {
-                    return $request->media->getClientOriginalName();
+                $computedMediaElement->storeAs(function ($request) use ($field){
+                    return $request->$field->getClientOriginalName();
                 });
             }
             $computedMediaElementFields[] = $computedMediaElement;
