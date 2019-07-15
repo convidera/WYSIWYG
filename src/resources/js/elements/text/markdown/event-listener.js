@@ -49,11 +49,11 @@ function onblur(e) {
 
     blurInProgess = true;
 
-    document.getElementsByTagName("BODY")[0].setAttribute('cursor-wait', true);
+    document.body.setAttribute('cursor-wait', true);
     getStrategy('text/markdown').refreshValue(container, value)
     .catch(handleError)
     .finally(() => {
-        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+        document.body.removeAttribute('cursor-wait');
         blurInProgess = false;
     });
 }

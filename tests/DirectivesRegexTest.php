@@ -97,4 +97,13 @@ class DirectivesRegexTest extends TestCase
         $php = $this->callReplaceKeyWithElement("'media', \$product->slides[0], ['additionalClasses' => 'Product-card__hero-image']", "mediaElement");
         $this->assertEquals("\$product->slides[0]->mediaElement('media'), ['additionalClasses' => 'Product-card__hero-image']", $php);
     }
+
+    /**
+     * @test
+     */
+    public function multipleAdditionalAttributes()
+    {
+        $php = $this->callReplaceKeyWithElement("'media', ['additionalAttributes' => 'data-event=\"scroll\" data-action=\"Scrolltiefe Sichtbarkeit Block 4\" data-label=\"Sichtbarkeit Block 4\"']", "mediaElement");
+        $this->assertEquals("\$data->mediaElement('media'), ['additionalAttributes' => 'data-event=\"scroll\" data-action=\"Scrolltiefe Sichtbarkeit Block 4\" data-label=\"Sichtbarkeit Block 4\"']", $php);
+    }
 }
