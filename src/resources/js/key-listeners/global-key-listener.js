@@ -76,7 +76,7 @@ export default function globalKeyListener(e) {
     if (e.code === 'Escape') {
         // ESC  =>  disable insert mode -> normal mode
         insertMode(false);
-        document.getElementsByTagName("BODY")[0].removeAttribute('cursor-wait');
+        document.body.removeAttribute('cursor-wait');
         return stopEvent(e);
     }
 }
@@ -96,22 +96,44 @@ const insertMode = (function() {
 
     function prevendAllInteractions() {
         // remove all to prevend submits/buttons, links and effects
-        const fn_onclick = (e) => { return stopEvent(e); };
+        const fn_onclick = (e) => {
+            if (window.wysiwyg.insertMode) {
+                return stopEvent(e);
+            }
+            return true;
+        };
         const elements = document.getElementsByTagName("*");
         for (let i = 0; i < elements.length; i++) {
             elements[i].onclick = fn_onclick;
         }
     }
+
+    function setPointerEventStyle(element, value) {
+        if (value) {
+            element.style.pointerEvents = value;
+            return;
+        }
+        element.style.removeProperty('pointer-events');
+    }
     
     return function(insert = null) {
+        insert = (insert === null) ? !window.wysiwyg.insertMode : insert;
+        window.wysiwyg.insertMode = insert;
+
         if (! enableInsertModeFirstTime) {
             enableInsertModeFirstTime = true;
             prevendAllInteractions();
         }
-        window.wysiwyg.insertMode = insert;
-        
+
+        // (un)set pointer-events to get more drag&drop support
+        setPointerEventStyle(document.body, (insert) ? 'none' : null);
+        iterateAllElementContainers((container) => {
+            setPointerEventStyle(container, (insert) ? 'auto' : null);
+        });
+
+        // (un)set contenteditable to text elements (e.g. plain and markdown)
         iterateAllTextElementContainers((container) => {
-            container.contentEditable = (insert === null) ? (container.contentEditable !== 'true') : insert;
+            container.contentEditable = insert;
         });
     };
 })();

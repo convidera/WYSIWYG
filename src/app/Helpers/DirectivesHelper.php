@@ -45,6 +45,7 @@ final class DirectivesHelper
     public static function parseTextDirectiveArguments($data, array $options = []) {
         $defaults = [
             'tag' => 'span',
+            'closeTag' => true,
         ];
         return self::createReturnObject($data, $options, $defaults);
     }

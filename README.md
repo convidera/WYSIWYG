@@ -72,6 +72,15 @@ volumes:
   - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts
 ```
 
+**NOTE**: Private key (id_rsa) must _only_ be read- and writeable for yourself due to that git on linux will not run otherwise. This should be done by default on your local machine.
+```text
+.ssh ll
+total 32
+-rw-------  1 <you>  staff   3,3K  1 Apr 13:05 id_rsa
+-rw-r--r--  1 <you>  staff   748B  1 Apr 13:05 id_rsa.pub
+-rw-r--r--  1 <you>  staff   1,7K  6 Mai 14:56 known_hosts
+```
+
 
 ## Setup
 
