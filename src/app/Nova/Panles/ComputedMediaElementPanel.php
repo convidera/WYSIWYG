@@ -31,6 +31,7 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
         $computedMediaElementFields = [];
         foreach ($fields as $field) {
             $computedMediaElement = ComputedMediaElement::make($field);
+            $field = self::getEscapedKey($field);
             if ($displayOnIndex && !in_array($field, $displayOnIndex)) {
                 $computedMediaElement->hideFromIndex();
             }
@@ -46,5 +47,9 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
         }
 
         return new self($name, $computedMediaElementFields);
+    }
+
+    private static function getEscapedKey(string $key) {
+        return str_replace('.', '_', $key);
     }
 }
