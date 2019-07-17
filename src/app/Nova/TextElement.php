@@ -70,9 +70,7 @@ abstract class TextElement extends Resource
             Select::make('type', 'type')->options([
                 'plain' => 'plain',
                 'markdown' => 'markdown',
-            ])->resolveUsing(function () {
-                return 'plain';
-            })->fillUsing(function () {
+            ])->fillUsing(function () {
                 return ;
             })->displayUsingLabels(),
 
