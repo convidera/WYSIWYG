@@ -71,7 +71,7 @@ abstract class TextElement extends Resource
                 'plain' => 'plain',
                 'markdown' => 'markdown',
             ])->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
-                return;
+                return 'plain';
             })->displayUsingLabels(),
 
 
