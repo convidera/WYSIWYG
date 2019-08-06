@@ -31,13 +31,13 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
         $computedMediaElementFields = [];
         foreach ($fields as $field) {
             $computedMediaElement = ComputedMediaElement::make($field);
-            $field = self::getEscapedKey($field);
             if ($displayOnIndex && !in_array($field, $displayOnIndex)) {
                 $computedMediaElement->hideFromIndex();
             }
             if ($path) {
                 $computedMediaElement->path($path);
             }
+            $field = self::getEscapedKey($field);
             if ($usesClientOriginalName) {
                 $computedMediaElement->storeAs(function ($request) use ($field){
                     return $request->$field->getClientOriginalName();
