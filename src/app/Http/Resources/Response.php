@@ -218,6 +218,6 @@ class Response implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        return $this->originalData;
+        return $this->data;
     }
 }
