@@ -144,6 +144,21 @@ class Response implements \JsonSerializable
         return null;
     }
 
+    public function squash()
+    {
+        foreach ($this->data->textElements as $textElement) {
+            throw_if(isset($this->data->{$textElement->key}), new Exception($textElement->key . ' is already set as a native property'));
+            $this->{$textElement->key} = $textElement->value;
+        }
+
+        foreach ($this->data->mediaElements as $mediaElement) {
+            throw_if(isset($this->data->{$mediaElement->key}), new Exception($mediaElement->key . ' is already set as a native property'));
+            $this->{$mediaElement->key} = $mediaElement->value;
+        }
+        
+        return $this;
+    }
+
     public function dump()
     {
         dump($this->originalData);
