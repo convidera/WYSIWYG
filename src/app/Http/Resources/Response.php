@@ -183,6 +183,22 @@ class Response implements \JsonSerializable
         return $this;
     }
 
+    public function removeDecorator()
+    {
+        $flat = $this->data;
+        foreach ($flat as $key => $value) {
+            if ($value instanceof Response) {
+                $flat->$key = $value->removeDecorator();
+            }
+            if (is_array($value) && isset($value[0]) && $value[0] instanceof Response) {
+                foreach ($value as $index => $item) {
+                    $flat->{$key}[$index] = $item->removeDecorator();
+                }
+            }
+        }
+        return $flat;
+    }
+
     public static function displayTextElementKeys($bool = false)
     {
         self::$displayTextElementKeys = $bool;
