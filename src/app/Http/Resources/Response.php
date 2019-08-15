@@ -172,10 +172,18 @@ class Response implements \JsonSerializable
             $sqashed->$key = $value;
         }
         foreach ($this->data->textElements ?? [] as $textElement) {
+            if (isset($sqashed->{$textElement->key})) {
+                $sqashed->{'textElement_' . $textElement->key} = $textElement->value;
+                continue;
+            }
             $sqashed->{$textElement->key} = $textElement->value;
         }
 
         foreach ($this->data->mediaElements ?? [] as $mediaElement) {
+            if (isset($sqashed->{$mediaElement->key})) {
+                $sqashed->{'mediaElement_' . $mediaElement->key} = $mediaElement->value;
+                continue;
+            }
             $sqashed->{$mediaElement->key} = $mediaElement->value;
         }
 
@@ -197,6 +205,11 @@ class Response implements \JsonSerializable
             }
         }
         return $flat;
+    }
+
+    public function dd()
+    {
+        dd($this->squash(true)->removeDecorator());
     }
 
     public static function displayTextElementKeys($bool = false)
