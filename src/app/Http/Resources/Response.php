@@ -2,8 +2,6 @@
 
 namespace Convidera\WYSIWYG\Http\Resources;
 
-use phpDocumentor\Reflection\Types\Self_;
-
 class Response implements \JsonSerializable
 {
     protected $data;
