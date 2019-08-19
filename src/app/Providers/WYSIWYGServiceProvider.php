@@ -52,9 +52,6 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $this->publishes([
             realpath(__DIR__ . '/../../../dist') => public_path('vendor/wysiwyg'),
         ], 'public');
-        $this->publishes([
-            realpath(__DIR__ . '/../Commands') => app_path('Console/Commands'),
-        ], 'commands');
 
         $this->directives();
     }
