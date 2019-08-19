@@ -2,6 +2,7 @@
 
 namespace Convidera\WYSIWYG\Providers;
 
+use App\Console\Commands\UpdateElementables;
 use Convidera\WYSIWYG\Http\Resources\Resource;
 use Convidera\WYSIWYG\Http\Resources\Response;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,11 @@ class WYSIWYGServiceProvider extends ServiceProvider
 
         // views
         $this->loadViewsFrom(realpath(__DIR__ . '/../../resources/views'), 'wysiwyg');
+
+        //commands
+        $this->commands([
+            UpdateElementables::class
+        ]);
     }
 
     /**
@@ -46,6 +52,9 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $this->publishes([
             realpath(__DIR__ . '/../../../dist') => public_path('vendor/wysiwyg'),
         ], 'public');
+        $this->publishes([
+            realpath(__DIR__ . '/../Commands') => app_path('Commands'),
+        ], 'commands');
 
         $this->directives();
     }
