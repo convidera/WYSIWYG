@@ -2,6 +2,7 @@
 
 namespace Convidera\WYSIWYG;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultMediaElements;
 use Convidera\WYSIWYG\UuidModel;
 use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
 use Convidera\WYSIWYG\Traits\HasDefaultTextElements;
@@ -49,5 +50,12 @@ class MediaElement extends UuidModel implements ProvidesDefaultTextElements
     public function scopeKey($query, $key)
     {
         $query->where('key', $key);
+    }
+
+    public static function getMediaElementables()
+    {
+        return collect(self::$booted)->keys()->filter(function ($class) {
+            return is_subclass_of($class, ProvidesDefaultMediaElements::class);
+        });
     }
 }

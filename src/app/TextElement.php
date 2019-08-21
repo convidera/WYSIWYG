@@ -2,6 +2,7 @@
 
 namespace Convidera\WYSIWYG;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
 use Convidera\WYSIWYG\UuidModel;
 
 class TextElement extends UuidModel
@@ -28,5 +29,12 @@ class TextElement extends UuidModel
     public function scopeKey($query, $key)
     {
         $query->where('key', $key);
+    }
+
+    public static function getTextElementables()
+    {
+        return collect(self::$booted)->keys()->filter(function ($class) {
+            return is_subclass_of($class, ProvidesDefaultTextElements::class);
+        });
     }
 }

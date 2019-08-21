@@ -39,18 +39,16 @@ class UpdateElementables extends Command
      */
     public function handle()
     {
-        TextElement::all()->each->textElementable()->pluck('text_elementable_type')
-            ->unique()->each(function ($model) {
-                $model::all()->each(function ($entry) use ($model){
-                    $model::createDefaultTextKeys($entry);
-                });
+        TextElement::getTextElementables()->each(function ($model) {
+            $model::all()->each(function ($entry) use ($model){
+                $model::createDefaultTextKeys($entry);
+            });
         });
 
-        MediaElement::all()->each->mediaElementable()->pluck('media_elementable_type')
-            ->unique()->each(function ($model) {
-                $model::all()->each(function ($entry) use ($model){
-                    $model::createDefaultMediaKeys($entry);
-                });
+        MediaElement::getMediaElementables()->each(function ($model) {
+            $model::all()->each(function ($entry) use ($model){
+                $model::createDefaultMediaKeys($entry);
+            });
         });
     }
 }
