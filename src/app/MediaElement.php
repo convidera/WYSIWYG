@@ -51,11 +51,4 @@ class MediaElement extends UuidModel implements ProvidesDefaultTextElements
     {
         $query->where('key', $key);
     }
-
-    public static function getMediaElementables()
-    {
-        return collect(self::$booted)->keys()->filter(function ($class) {
-            return is_subclass_of($class, ProvidesDefaultMediaElements::class);
-        });
-    }
 }

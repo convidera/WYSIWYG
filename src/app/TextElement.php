@@ -30,11 +30,4 @@ class TextElement extends UuidModel
     {
         $query->where('key', $key);
     }
-
-    public static function getTextElementables()
-    {
-        return collect(self::$booted)->keys()->filter(function ($class) {
-            return is_subclass_of($class, ProvidesDefaultTextElements::class);
-        });
-    }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Convidera\WYSIWYG\MediaElement;
-use Convidera\WYSIWYG\TextElement;
+use Convidera\WYSIWYG\Traits\ProvidesDefaultMediaElements;
+use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
 use Illuminate\Console\Command;
 
 class UpdateElementables extends Command
@@ -39,16 +39,22 @@ class UpdateElementables extends Command
      */
     public function handle()
     {
-        TextElement::getTextElementables()->each(function ($model) {
-            $model::all()->each(function ($entry) use ($model){
-                $model::createDefaultTextKeys($entry);
-            });
-        });
+        $loader = (include "vendor/autoload.php");
+        foreach ($loader->getClassMap() as $class => $path) {
+            if (strpos(realpath($path), 'vendor') !== false) {
+                continue;
+            }
+            if (is_subclass_of($class, ProvidesDefaultTextElements::class)) {
+                $class::all()->each(function ($entry) use ($class){
+                    $class::createDefaultTextKeys($entry);
+                });
+            }
 
-        MediaElement::getMediaElementables()->each(function ($model) {
-            $model::all()->each(function ($entry) use ($model){
-                $model::createDefaultMediaKeys($entry);
-            });
-        });
+            if (is_subclass_of($class, ProvidesDefaultMediaElements::class)) {
+                $class::all()->each(function ($entry) use ($class) {
+                    $class::createDefaultMediaKeys($entry);
+                });
+            }
+        }
     }
 }
