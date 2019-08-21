@@ -40,6 +40,7 @@ class UpdateElementables extends Command
     public function handle()
     {
         $loader = (include "vendor/autoload.php");
+        
         foreach ($loader->getClassMap() as $class => $path) {
             if (strpos(realpath($path), 'vendor') !== false) {
                 continue;
