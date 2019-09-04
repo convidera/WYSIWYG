@@ -146,7 +146,7 @@ class WYSIWYGServiceProvider extends ServiceProvider
         $var = (array_key_exists('var', $matches) && !empty($matches['var'][0]) && $matches['var'][0] != 'null') ? $matches['var'][0] : '$data';
         $options = (array_key_exists('options', $matches) && !empty($matches['options'][0]) && $matches['var'][0] != 'null') ? $matches['options'][0] : '';
 
-        return "${var}->${fnName}('${key}')${options}";
+        return "${var}->${fnName}('${key}') ?? ${var}${options}";
     }
 
     private function textElementCode($expression) {
