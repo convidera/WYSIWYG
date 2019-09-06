@@ -2,9 +2,10 @@
 
 namespace Convidera\WYSIWYG\Traits;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultElements;
 use Illuminate\Database\Eloquent\Model;
 
-interface ProvidesDefaultTextElements
+interface ProvidesDefaultTextElements extends ProvidesDefaultElements
 {
     public function textElements();
 

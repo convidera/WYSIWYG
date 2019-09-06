@@ -2,9 +2,10 @@
 
 namespace Convidera\WYSIWYG\Traits;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultElements;
 use Illuminate\Database\Eloquent\Model;
 
-interface ProvidesDefaultMediaElements
+interface ProvidesDefaultMediaElements extends ProvidesDefaultElements
 {
     public function mediaElements();
 
