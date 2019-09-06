@@ -23,7 +23,7 @@ class DirectivesRegexTest extends TestCase
     public function single_quotes_default()
     {
         $php = $this->callReplaceKeyWithElement("'key'", "textElement");
-        $this->assertEquals("\$data->textElement('key')", $php);
+        $this->assertEquals("\$data->textElement('key') ?? \$data", $php);
     }
 
     /**
@@ -32,7 +32,7 @@ class DirectivesRegexTest extends TestCase
     public function single_quotes_with_variable()
     {
         $php = $this->callReplaceKeyWithElement("'key', \$var", "textElement");
-        $this->assertEquals("\$var->textElement('key')", $php);
+        $this->assertEquals("\$var->textElement('key') ?? \$var", $php);
     }
 
     /**
@@ -41,7 +41,7 @@ class DirectivesRegexTest extends TestCase
     public function single_quotes_with_options()
     {
         $php = $this->callReplaceKeyWithElement("'key', [ 'options' => true ]", "textElement");
-        $this->assertEquals("\$data->textElement('key'), [ 'options' => true ]", $php);
+        $this->assertEquals("\$data->textElement('key') ?? \$data, [ 'options' => true ]", $php);
     }
 
     /**
@@ -50,7 +50,7 @@ class DirectivesRegexTest extends TestCase
     public function single_quotes_with_varibale_and_options()
     {
         $php = $this->callReplaceKeyWithElement("'key', \$var, [ 'options' => true ]", "textElement");
-        $this->assertEquals("\$var->textElement('key'), [ 'options' => true ]", $php);
+        $this->assertEquals("\$var->textElement('key') ?? \$var, [ 'options' => true ]", $php);
     }
 
     /**
@@ -59,7 +59,7 @@ class DirectivesRegexTest extends TestCase
     public function double_quotes_default()
     {
         $php = $this->callReplaceKeyWithElement('"key"', "mediaElement");
-        $this->assertEquals("\$data->mediaElement('key')", $php);
+        $this->assertEquals("\$data->mediaElement('key') ?? \$data", $php);
     }
 
     /**
@@ -68,7 +68,7 @@ class DirectivesRegexTest extends TestCase
     public function double_quotes_with_variable()
     {
         $php = $this->callReplaceKeyWithElement('"key", $var', "mediaElement");
-        $this->assertEquals("\$var->mediaElement('key')", $php);
+        $this->assertEquals("\$var->mediaElement('key') ?? \$var", $php);
     }
 
     /**
@@ -77,7 +77,7 @@ class DirectivesRegexTest extends TestCase
     public function double_quotes_with_options()
     {
         $php = $this->callReplaceKeyWithElement('"key", [ "options" => true ]', "mediaElement");
-        $this->assertEquals("\$data->mediaElement('key'), [ \"options\" => true ]", $php);
+        $this->assertEquals("\$data->mediaElement('key') ?? \$data, [ \"options\" => true ]", $php);
     }
 
     /**
@@ -86,7 +86,7 @@ class DirectivesRegexTest extends TestCase
     public function double_quotes_with_varibale_and_options()
     {
         $php = $this->callReplaceKeyWithElement('"key", $var, [ "options" => true ]', "mediaElement");
-        $this->assertEquals("\$var->mediaElement('key'), [ \"options\" => true ]", $php);
+        $this->assertEquals("\$var->mediaElement('key') ?? \$var, [ \"options\" => true ]", $php);
     }
 
     /**
@@ -95,7 +95,7 @@ class DirectivesRegexTest extends TestCase
     public function complex_variable_expression()
     {
         $php = $this->callReplaceKeyWithElement("'media', \$product->slides[0], ['additionalClasses' => 'Product-card__hero-image']", "mediaElement");
-        $this->assertEquals("\$product->slides[0]->mediaElement('media'), ['additionalClasses' => 'Product-card__hero-image']", $php);
+        $this->assertEquals("\$product->slides[0]->mediaElement('media') ?? \$product->slides[0], ['additionalClasses' => 'Product-card__hero-image']", $php);
     }
 
     /**
@@ -104,6 +104,6 @@ class DirectivesRegexTest extends TestCase
     public function multipleAdditionalAttributes()
     {
         $php = $this->callReplaceKeyWithElement("'media', ['additionalAttributes' => 'data-event=\"scroll\" data-action=\"Scrolltiefe Sichtbarkeit Block 4\" data-label=\"Sichtbarkeit Block 4\"']", "mediaElement");
-        $this->assertEquals("\$data->mediaElement('media'), ['additionalAttributes' => 'data-event=\"scroll\" data-action=\"Scrolltiefe Sichtbarkeit Block 4\" data-label=\"Sichtbarkeit Block 4\"']", $php);
+        $this->assertEquals("\$data->mediaElement('media') ?? \$data, ['additionalAttributes' => 'data-event=\"scroll\" data-action=\"Scrolltiefe Sichtbarkeit Block 4\" data-label=\"Sichtbarkeit Block 4\"']", $php);
     }
 }

@@ -12,50 +12,14 @@ use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Select;
 use Wehaa\Liveupdate\Liveupdate;
 
-abstract class TextElement extends Resource
+class TextElement extends Resource
 {
-    /**
-     * Array of class types which should be displayed.
-     *
-     * @return array
-     *
-     * Example: return [ App\Nova\Homepage::class, App\Nova\StaticContent::class ]
-     */
-    public abstract function getTextElementableTypes();
-
-    /**
-     * Indicates if the resource should be displayed in the sidebar.
-     *
-     * @var bool
-     */
-    public static $displayInNavigation = false;
-
-    public static $indexDefaultOrder = [
-        'key' => 'asc'
-    ];
-
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
     public static $model = 'Convidera\WYSIWYG\TextElement';
-
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
-    public static $title = 'key';
-
-    /**
-     * The columns that should be searched.
-     *
-     * @var array
-     */
-    public static $search = [
-        'key', 'value',
-    ];
 
     /**
      * Get the fields displayed by the resource.
@@ -89,46 +53,14 @@ abstract class TextElement extends Resource
     }
 
     /**
-     * Get the cards available for the request.
+     * Array of class types which should be displayed.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return array
-     */
-    public function cards(Request $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the filters available for the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @example `return [ App\Nova\Homepage::class, App\Nova\StaticContent::class ];`
      */
-    public function filters(Request $request)
+    public function getTextElementableTypes()
     {
-        return [];
-    }
-
-    /**
-     * Get the lenses available for the resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function lenses(Request $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function actions(Request $request)
-    {
-        return [];
+        static::$elementNovaClasses()->textElements;
     }
 }
