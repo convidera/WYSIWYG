@@ -37,6 +37,7 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
             if ($path) {
                 $computedMediaElement->path($path);
             }
+            $field = self::getEscapedKey($field);
             if ($usesClientOriginalName) {
                 $computedMediaElement->storeAs(function ($request) use ($field){
                     return $request->$field->getClientOriginalName();
@@ -46,5 +47,9 @@ class ComputedMediaElementPanel extends \Laravel\Nova\Panel
         }
 
         return new self($name, $computedMediaElementFields);
+    }
+
+    private static function getEscapedKey(string $key) {
+        return str_replace('.', '_', $key);
     }
 }

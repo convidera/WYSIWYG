@@ -4,9 +4,50 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "305cc6609eab9e72978491f30e8cf9cd",
-    "content-hash": "0bdf8549cb48467a287be3d8ed20910c",
+    "hash": "cb18aa6c8512b88fa5fa834ae1b0120e",
+    "content-hash": "1edcf86fa4e43e1695474b332a0e16f0",
     "packages": [
+        {
+            "name": "epartment/nova-dependency-container",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/epartment/nova-dependency-container.git",
+                "reference": "65d3205509321b6fd04dd242e3e929b1183c82a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/epartment/nova-dependency-container/zipball/65d3205509321b6fd04dd242e3e929b1183c82a0",
+                "reference": "65d3205509321b6fd04dd242e3e929b1183c82a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Epartment\\NovaDependencyContainer\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Epartment\\NovaDependencyContainer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field container allowing to depend on other fields values",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "time": "2019-04-04 14:11:55"
+        },
         {
             "name": "wehaa/liveupdate",
             "version": "v0.1",

@@ -2,6 +2,7 @@
 
 namespace Convidera\WYSIWYG;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultMediaElements;
 use Convidera\WYSIWYG\UuidModel;
 use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
 use Convidera\WYSIWYG\Traits\HasDefaultTextElements;
@@ -24,6 +25,7 @@ class MediaElement extends UuidModel implements ProvidesDefaultTextElements
    static protected $defaultTextKeys = [
        'alt',
        'title',
+       'source'
    ];
 
     /**

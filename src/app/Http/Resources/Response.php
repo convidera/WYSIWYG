@@ -60,11 +60,13 @@ class Response implements \JsonSerializable
 
     public function __set($name, $value)
     {
-        throw_if(isset($this->data->$name), new Exception('Value is already set'));
-        throw_if($this->getLocalElement('text', $name), new Exception('TextElement is already set'));
-        throw_if($this->getLocalElement('media', $name), new Exception('MediaElement is already set'));
-        throw_if($this->getSubResourceElement('text', $name), new Exception('SubResource TextElement is already set'));
-        throw_if($this->getSubResourceElement('media', $name), new Exception('SubResource MediaElement is already set'));
+        throw_if(isset($this->data->$name), new \Exception('Value >'.$name.'< is already set'));
+        throw_if($this->getLocalElement('text', $name), new \Exception('TextElement >'.$name.'< is already set'));
+        throw_if($this->getLocalElement('media', $name), new \Exception('MediaElement >'.$name.'< is already set'));
+        throw_if($this->getSubResourceElement('text', $name),
+            new \Exception('SubResource >'.$name.'< TextElement is already set'));
+        throw_if($this->getSubResourceElement('media', $name),
+            new \Exception('SubResource >'.$name.'< MediaElement is already set'));
 
         $this->$name = $value;
     }
@@ -74,7 +76,8 @@ class Response implements \JsonSerializable
         return ($element = $this->element($key)) ? $element->value : null;
     }
 
-    public function element($key) {
+    public function element($key)
+    {
         if ($textElement = $this->textElement($key)) {
             return $textElement;
         }
@@ -100,7 +103,8 @@ class Response implements \JsonSerializable
         return $this->getElement('media', $key);
     }
 
-    public function media($key) {
+    public function media($key)
+    {
         return ($mediaElement = $this->mediaElement($key)) ? $mediaElement->value : null;
     }
 
@@ -112,12 +116,13 @@ class Response implements \JsonSerializable
         if ($element = $this->getSubResourceElement($type, $key)) {
             return $element;
         }
+
         return null;
     }
 
     private function getLocalElement(string $type, $key)
     {
-        $type = $type . 'Elements';
+        $type = $type.'Elements';
 
         if (!isset($this->data->$type)) {
             return null;
@@ -127,32 +132,84 @@ class Response implements \JsonSerializable
                 return $element;
             }
         }
+
         return null;
     }
 
     private function getSubResourceElement(string $type, $key)
     {
-        $type = $type . 'Element';
+        $type = $type.'Element';
         $splits = explode('.', $key);
         $subResource = $splits[0];
         if (isset($this->data->$subResource) && count($splits) > 1) {
             if (is_array($this->$subResource) && $this->$subResource[$splits[1]]) {
                 return $this->$subResource[$splits[1]]->$type(implode('.', array_slice($splits, 2)));
             }
+
             return $this->$subResource->$type(implode('.', array_slice($splits, 1)));
         }
+
         return null;
     }
 
-    public function dump()
+    public function squash($recursive = false)
     {
-        dump($this->originalData);
+        $sqashed = new \stdClass();
+        foreach ($this->data as $key => $value) {
+            if ($recursive) {
+                if ($value instanceof Response) {
+                    $value->squash($recursive);
+                }
+                if (is_array($value) && isset($value[0]) && $value[0] instanceof Response) {
+                    foreach ($value as $item) {
+                        $item->squash($recursive);
+                    }
+                }
+            }
+            if ($key == 'textElements' || $key == 'mediaElements') {
+                continue;
+            }
+            $sqashed->$key = $value;
+        }
+        foreach ($this->data->textElements ?? [] as $textElement) {
+            if (isset($sqashed->{$textElement->key})) {
+                $sqashed->{'textElement_' . $textElement->key} = $textElement->value;
+                continue;
+            }
+            $sqashed->{$textElement->key} = $textElement->value;
+        }
+
+        foreach ($this->data->mediaElements ?? [] as $mediaElement) {
+            if (isset($sqashed->{$mediaElement->key})) {
+                $sqashed->{'mediaElement_' . $mediaElement->key} = $mediaElement->value;
+                continue;
+            }
+            $sqashed->{$mediaElement->key} = $mediaElement->value;
+        }
+
+        $this->data = $sqashed;
+        return $this;
+    }
+
+    public function removeDecorator()
+    {
+        $flat = $this->data;
+        foreach ($flat as $key => $value) {
+            if ($value instanceof Response) {
+                $flat->$key = $value->removeDecorator();
+            }
+            if (is_array($value) && isset($value[0]) && $value[0] instanceof Response) {
+                foreach ($value as $index => $item) {
+                    $flat->{$key}[$index] = $item->removeDecorator();
+                }
+            }
+        }
+        return $flat;
     }
 
     public function dd()
     {
-        $this->dump();
-        die;
+        dd($this->squash(true)->removeDecorator());
     }
 
     public static function displayTextElementKeys($bool = false)
@@ -165,8 +222,13 @@ class Response implements \JsonSerializable
         return json_encode($this->originalData);
     }
 
+    public function data()
+    {
+        return $this->data;
+    }
+
     public function jsonSerialize()
     {
-        return $this->originalData;
+        return $this->data;
     }
 }

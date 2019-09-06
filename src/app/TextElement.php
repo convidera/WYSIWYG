@@ -2,6 +2,7 @@
 
 namespace Convidera\WYSIWYG;
 
+use Convidera\WYSIWYG\Traits\ProvidesDefaultTextElements;
 use Convidera\WYSIWYG\UuidModel;
 
 class TextElement extends UuidModel

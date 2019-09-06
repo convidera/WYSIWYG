@@ -20,14 +20,7 @@ class ComputedMediaElement extends Image
     {
         $key = $this->getEscapedKey($requestAttribute);
         if (is_null($file = $request->file($key)) || ! $file->isValid()) {
-            return $model->mediaElements()->updateOrCreate([
-                'media_elementable_id' => $model->id,
-                'key' => $attribute,
-            ], [
-                'media_elementable_id' => $model->id,
-                'key' => $attribute,
-                'value' => null
-            ]);
+            return;
         }
 
         $model->id = $model->id ?? Uuid::uuid4()->toString();
