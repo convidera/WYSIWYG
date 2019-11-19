@@ -1,7 +1,7 @@
 const mix = require('laravel-mix');
 
 mix.setPublicPath('dist')
-   .js('src/resources/js/app.js', '.')
+   .babel('src/resources/js/app.js', 'dist/app.js')  // no vue  // .js('src/resources/js/app.js', '.')
    .sass('src/resources/sass/app.scss', '.');
 
 if (mix.inProduction()) {

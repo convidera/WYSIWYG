@@ -1,10 +1,10 @@
 {
     "name": "convidera/wysiwyg",
-    "description": "A basic and simple WYSIWYG editor for sstext of homepages build with the php templating engine blade.",
+    "description": "A basic and simple WYSIWYG editor for text of homepages build with the php template engine blade.",
     "keywords": ["WYSIWYG", "composer", "package", "blade"],
     "type": "project",
     "license": "GPL-3.0-or-later",
-    "version": "0.0.2.0",
+    "version": "0.0.2-1",
     "authors": [
         {
             "name": "Florian Heinrich",
